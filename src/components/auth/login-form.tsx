@@ -47,12 +47,12 @@ export default function LoginForm({ disabled = false }: { disabled?: boolean }) 
       <button
         type="submit"
         disabled={disabled || isPending}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-brand-action px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover disabled:cursor-not-allowed disabled:bg-control-disabled"
       >
         {isPending ? "Giriş yapılıyor" : "Giriş Yap"}
       </button>
 
-      <p className="text-center text-sm text-slate-500">
+      <p className="text-center text-sm text-foreground-muted">
         Hesabın yok mu?{" "}
         <Link href="/register" className="rounded-sm font-medium text-brand-700 hover:text-brand-800">
           Kayıt ol

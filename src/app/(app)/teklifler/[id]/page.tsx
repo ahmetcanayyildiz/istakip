@@ -58,25 +58,25 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
     <div className="mx-auto max-w-7xl space-y-6">
       <Link
         href="/teklifler"
-        className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+        className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-foreground-secondary transition-colors hover:text-foreground"
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Teklifler
       </Link>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-xs">
+      <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-xs font-semibold tracking-wide text-brand-700 uppercase">
               {quote.code}
             </p>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground">
               {quote.title}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-foreground-muted">
               <Link
                 href={`/musteriler/${quote.customer.id}`}
-                className="rounded-sm font-medium text-slate-700 transition-colors hover:text-brand-700"
+                className="rounded-sm font-medium text-foreground-secondary transition-colors hover:text-brand-700"
               >
                 {quote.customer.name}
               </Link>
@@ -86,47 +86,47 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
           <StatusBadge status={quote.status} />
         </div>
 
-        <dl className="mt-5 grid grid-cols-1 gap-4 border-t border-slate-100 pt-5 sm:grid-cols-3">
+        <dl className="mt-5 grid grid-cols-1 gap-4 border-t border-ui-border-subtle pt-5 sm:grid-cols-3">
           <div>
-            <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">
               Oluşturulma tarihi
             </dt>
-            <dd className="mt-1 text-sm font-medium text-slate-900 tabular-nums">
+            <dd className="mt-1 text-sm font-medium text-foreground tabular-nums">
               {quote.createdAt}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">
               Geçerlilik tarihi
             </dt>
-            <dd className="mt-1 text-sm font-medium text-slate-900 tabular-nums">
+            <dd className="mt-1 text-sm font-medium text-foreground tabular-nums">
               {quote.validUntil}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">
               Son güncelleme
             </dt>
-            <dd className="mt-1 text-sm font-medium text-slate-900 tabular-nums">
+            <dd className="mt-1 text-sm font-medium text-foreground tabular-nums">
               {quote.updatedAt}
             </dd>
           </div>
         </dl>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xs">
-        <div className="border-b border-slate-200 px-4 py-4 sm:px-5">
-          <h2 className="text-base font-semibold tracking-tight text-slate-900">
+      <section className="overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
+        <div className="border-b border-ui-border px-4 py-4 sm:px-5">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
             Teklif Kalemleri
           </h2>
-          <p className="mt-0.5 text-xs text-slate-500">
+          <p className="mt-0.5 text-xs text-foreground-muted">
             Fiyatlandırmaya dahil olan ürün ve hizmetler
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[42rem] border-collapse text-left">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="border-b border-ui-border bg-surface-muted">
               <tr>
                 <th scope="col" className={TH_CLASS}>Açıklama</th>
                 <th scope="col" className={`${TH_CLASS} text-right`}>Miktar</th>
@@ -135,10 +135,10 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
                 <th scope="col" className={`${TH_CLASS} text-right`}>Toplam</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-ui-border-subtle">
               {quote.items.map((item) => (
                 <tr key={item.description}>
-                  <td className={`${TD_CLASS} font-medium text-slate-900`}>{item.description}</td>
+                  <td className={`${TD_CLASS} font-medium text-foreground`}>{item.description}</td>
                   <td className={`${TD_CLASS} text-right tabular-nums`}>
                     {item.quantity.toLocaleString("tr-TR")}
                   </td>
@@ -146,7 +146,7 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
                   <td className={`${TD_CLASS} text-right whitespace-nowrap tabular-nums`}>
                     {formatCurrency(item.unitPrice)}
                   </td>
-                  <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-slate-900 tabular-nums`}>
+                  <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>
                     {formatCurrency(item.quantity * item.unitPrice)}
                   </td>
                 </tr>
@@ -155,31 +155,31 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
           </table>
         </div>
 
-        <div className="flex justify-end border-t border-slate-200 bg-slate-50/60 px-4 py-5 sm:px-5">
+        <div className="flex justify-end border-t border-ui-border bg-surface-muted/60 px-4 py-5 sm:px-5">
           <dl className="w-full max-w-sm space-y-3 text-sm">
             <div className="flex items-center justify-between gap-6">
-              <dt className="text-slate-500">Ara toplam</dt>
-              <dd className="font-medium text-slate-900 tabular-nums">
+              <dt className="text-foreground-muted">Ara toplam</dt>
+              <dd className="font-medium text-foreground tabular-nums">
                 {formatCurrency(totals.subtotal)}
               </dd>
             </div>
             {totals.discount > 0 ? (
               <div className="flex items-center justify-between gap-6">
-                <dt className="text-slate-500">İndirim</dt>
-                <dd className="font-medium text-emerald-700 tabular-nums">
+                <dt className="text-foreground-muted">İndirim</dt>
+                <dd className="font-medium text-success tabular-nums">
                   −{formatCurrency(totals.discount)}
                 </dd>
               </div>
             ) : null}
             <div className="flex items-center justify-between gap-6">
-              <dt className="text-slate-500">KDV (%{quote.vatRate})</dt>
-              <dd className="font-medium text-slate-900 tabular-nums">
+              <dt className="text-foreground-muted">KDV (%{quote.vatRate})</dt>
+              <dd className="font-medium text-foreground tabular-nums">
                 {formatCurrency(totals.vat)}
               </dd>
             </div>
-            <div className="flex items-center justify-between gap-6 border-t border-slate-200 pt-3">
-              <dt className="font-semibold text-slate-900">Genel toplam</dt>
-              <dd className="text-lg font-semibold tracking-tight text-slate-900 tabular-nums">
+            <div className="flex items-center justify-between gap-6 border-t border-ui-border pt-3">
+              <dt className="font-semibold text-foreground">Genel toplam</dt>
+              <dd className="text-lg font-semibold tracking-tight text-foreground tabular-nums">
                 {formatCurrency(totals.grandTotal)}
               </dd>
             </div>
@@ -188,8 +188,8 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
       </section>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-xs">
-          <h2 className="text-base font-semibold tracking-tight text-slate-900">
+        <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
             Müşteri Bilgisi
           </h2>
           <Link
@@ -199,18 +199,18 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
             {quote.customer.name}
           </Link>
 
-          <dl className="mt-4 space-y-3 border-t border-slate-100 pt-4">
+          <dl className="mt-4 space-y-3 border-t border-ui-border-subtle pt-4">
             {customerRows.map((row) => {
               const Icon = row.icon;
 
               return (
                 <div key={row.label} className="flex items-start gap-2.5">
-                  <span aria-hidden className="mt-0.5 text-slate-400">
+                  <span aria-hidden className="mt-0.5 text-foreground-subtle">
                     <Icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0">
-                    <dt className="text-xs font-medium text-slate-500">{row.label}</dt>
-                    <dd className="mt-0.5 text-sm break-words text-slate-900">
+                    <dt className="text-xs font-medium text-foreground-muted">{row.label}</dt>
+                    <dd className="mt-0.5 text-sm break-words text-foreground">
                       {row.href ? (
                         <a
                           href={row.href}
@@ -229,11 +229,11 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
           </dl>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-xs">
-          <h2 className="text-base font-semibold tracking-tight text-slate-900">Notlar</h2>
+        <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">Notlar</h2>
           <ul className="mt-4 space-y-3">
             {quote.notes.map((note) => (
-              <li key={note} className="flex gap-3 text-sm leading-6 text-slate-600">
+              <li key={note} className="flex gap-3 text-sm leading-6 text-foreground-secondary">
                 <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" />
                 <span>{note}</span>
               </li>

@@ -1,11 +1,11 @@
 type Tone = "positive" | "progress" | "warning" | "neutral" | "danger";
 
 const TONE_STYLES: Record<Tone, string> = {
-  positive: "bg-emerald-50 text-emerald-800 ring-emerald-600/20",
+  positive: "bg-success-soft text-success ring-success-ring",
   progress: "bg-brand-50 text-brand-800 ring-brand-600/20",
-  warning: "bg-amber-50 text-amber-800 ring-amber-600/20",
-  neutral: "bg-slate-100 text-slate-700 ring-slate-500/20",
-  danger: "bg-rose-50 text-rose-800 ring-rose-600/20",
+  warning: "bg-warning-soft text-warning ring-warning-ring",
+  neutral: "bg-surface-strong text-foreground-secondary ring-neutral-ring",
+  danger: "bg-danger-soft text-danger ring-danger-ring",
 };
 
 const STATUS_TONES: Record<string, Tone> = {

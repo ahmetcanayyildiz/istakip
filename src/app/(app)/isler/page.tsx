@@ -15,10 +15,10 @@ export default function IslerPage() {
   return (
     <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">İşler</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">İşler</h1>
+        <p className="mt-1 text-sm text-foreground-muted">
           İş süreçlerini, tarihlerini ve finansal durumlarını takip edin. Toplam{" "}
-          <span className="font-medium text-slate-700 tabular-nums">{JOBS.length}</span> iş kayıtlı.
+          <span className="font-medium text-foreground-secondary tabular-nums">{JOBS.length}</span> iş kayıtlı.
         </p>
       </div>
 

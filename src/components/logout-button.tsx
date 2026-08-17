@@ -38,14 +38,14 @@ export default function LogoutButton() {
         type="button"
         onClick={handleLogout}
         disabled={isPending}
-        className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 disabled:cursor-wait disabled:opacity-60"
+        className="inline-flex min-h-9 items-center justify-center rounded-md border border-ui-border bg-surface px-3 text-sm font-medium text-foreground-secondary transition-colors hover:border-ui-border-strong hover:text-foreground disabled:cursor-wait disabled:opacity-60"
       >
         {isPending ? "Çıkılıyor" : "Çıkış"}
       </button>
       {errorMessage ? (
         <p
           role="alert"
-          className="absolute top-11 right-0 z-20 w-60 rounded-md border border-rose-200 bg-white p-2 text-xs text-rose-700 shadow-sm"
+          className="absolute top-11 right-0 z-20 w-60 rounded-md border border-danger-border bg-surface p-2 text-xs text-danger shadow-sm"
         >
           {errorMessage}
         </p>

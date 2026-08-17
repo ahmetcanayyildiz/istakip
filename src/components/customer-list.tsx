@@ -56,14 +56,14 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
   };
 
   return (
-    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xs">
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+    <section className="overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
+      <div className="flex flex-col gap-3 border-b border-ui-border px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative w-full lg:max-w-sm">
           <label htmlFor="musteri-arama" className="sr-only">
             Müşteri ara
           </label>
           <SearchIcon
-            className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
+            className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground-subtle"
           />
           <input
             id="musteri-arama"
@@ -71,14 +71,14 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Firma, yetkili, telefon veya e-posta ara"
-            className="w-full rounded-md border border-slate-200 bg-white py-2 pr-3 pl-9 text-sm text-slate-900 placeholder:text-slate-400"
+            className="w-full rounded-md border border-ui-border bg-surface py-2 pr-3 pl-9 text-sm text-foreground placeholder:text-foreground-subtle"
           />
         </div>
 
         <div
           role="group"
           aria-label="Durum filtresi"
-          className="flex items-center gap-1 self-start rounded-md border border-slate-200 p-0.5"
+          className="flex items-center gap-1 self-start rounded-md border border-ui-border p-0.5"
         >
           {STATUS_FILTERS.map((item) => {
             const isSelected = status === item;
@@ -92,11 +92,11 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
                 className={`rounded-sm px-3 py-1.5 text-sm font-medium transition-colors ${
                   isSelected
                     ? "bg-brand-50 text-brand-800"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    : "text-foreground-secondary hover:bg-surface-hover hover:text-foreground"
                 }`}
               >
                 {item}
-                <span className="ml-1.5 text-xs text-slate-500 tabular-nums">
+                <span className="ml-1.5 text-xs text-foreground-muted tabular-nums">
                   {counts[item]}
                 </span>
               </button>
@@ -113,19 +113,19 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
         <div className="px-6 py-16 text-center">
           <span
             aria-hidden
-            className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-400"
+            className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-surface-strong text-foreground-subtle"
           >
             <SearchIcon className="h-5 w-5" />
           </span>
-          <h3 className="mt-3 text-sm font-semibold text-slate-900">Müşteri bulunamadı</h3>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+          <h3 className="mt-3 text-sm font-semibold text-foreground">Müşteri bulunamadı</h3>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-foreground-muted">
             Arama veya durum filtresine uyan kayıt yok. Farklı bir arama deneyin ya da
             filtreleri temizleyin.
           </p>
           <button
             type="button"
             onClick={resetFilters}
-            className="mt-4 inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50"
+            className="mt-4 inline-flex items-center rounded-md border border-ui-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground-secondary shadow-xs transition-colors hover:bg-surface-hover"
           >
             Filtreleri temizle
           </button>
@@ -133,7 +133,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="border-b border-ui-border bg-surface-muted">
               <tr>
                 <th scope="col" className={TH_CLASS}>
                   Müşteri
@@ -164,7 +164,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-ui-border-subtle">
               {filtered.map((customer) => (
                 <tr
                   key={customer.id}
@@ -174,21 +174,21 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
                   <td className={TD_CLASS}>
                     <Link
                       href={`/musteriler/${customer.id}`}
-                      className="rounded-sm font-medium text-slate-900 hover:text-brand-700"
+                      className="rounded-sm font-medium text-foreground hover:text-brand-700"
                     >
                       {customer.name}
                     </Link>
-                    <span className="mt-0.5 block text-xs text-slate-500 md:hidden">
+                    <span className="mt-0.5 block text-xs text-foreground-muted md:hidden">
                       {customer.contact} · {customer.phone}
                     </span>
-                    <span className="mt-0.5 hidden text-xs text-slate-500 md:block">
+                    <span className="mt-0.5 hidden text-xs text-foreground-muted md:block">
                       {customer.city}
                     </span>
                   </td>
                   <td className={`${TD_CLASS} hidden md:table-cell`}>{customer.contact}</td>
                   <td className={`${TD_CLASS} hidden lg:table-cell`}>
-                    <span className="block text-slate-700">{customer.phone}</span>
-                    <span className="mt-0.5 block text-xs text-slate-500">
+                    <span className="block text-foreground-secondary">{customer.phone}</span>
+                    <span className="mt-0.5 block text-xs text-foreground-muted">
                       {customer.email}
                     </span>
                   </td>
@@ -199,7 +199,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
                     {customer.totalJobs}
                   </td>
                   <td
-                    className={`${TD_CLASS} text-right font-medium text-slate-900 tabular-nums`}
+                    className={`${TD_CLASS} text-right font-medium text-foreground tabular-nums`}
                   >
                     {formatCurrency(customer.totalRevenue)}
                   </td>
@@ -210,7 +210,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
                     {customer.lastActivity}
                   </td>
                   <td className={`${TD_CLASS} text-right`}>
-                    <ChevronRightIcon className="ml-auto h-4 w-4 text-slate-300" />
+                    <ChevronRightIcon className="ml-auto h-4 w-4 text-foreground-faint" />
                   </td>
                 </tr>
               ))}
@@ -220,7 +220,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
       )}
 
       {filtered.length > 0 ? (
-        <div className="flex items-center justify-between border-t border-slate-200 px-5 py-3 text-xs text-slate-500">
+        <div className="flex items-center justify-between border-t border-ui-border px-5 py-3 text-xs text-foreground-muted">
           <span className="tabular-nums">
             {filtered.length} / {customers.length} müşteri gösteriliyor
           </span>

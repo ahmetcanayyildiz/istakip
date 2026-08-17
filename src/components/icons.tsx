@@ -18,7 +18,7 @@ const strokeIcon = {
 export function LogoMark({ className = "h-8 w-8" }: IconProps) {
   return (
     <span
-      className={`flex items-center justify-center rounded-md bg-brand-700 text-white ${className}`}
+      className={`flex items-center justify-center rounded-md bg-brand-action text-white ${className}`}
       aria-hidden
     >
       <svg
@@ -176,6 +176,23 @@ export function ChevronRightIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg {...strokeIcon} strokeWidth={2} className={className}>
       <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+    </svg>
+  );
+}
+
+export function SunIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg {...strokeIcon} className={className}>
+      <circle cx="12" cy="12" r="3.75" />
+      <path d="M12 2.25v1.5M12 20.25v1.5M4.5 4.5l1.06 1.06M18.44 18.44l1.06 1.06M2.25 12h1.5M20.25 12h1.5M4.5 19.5l1.06-1.06M18.44 5.56l1.06-1.06" />
+    </svg>
+  );
+}
+
+export function MoonIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg {...strokeIcon} className={className}>
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
     </svg>
   );
 }

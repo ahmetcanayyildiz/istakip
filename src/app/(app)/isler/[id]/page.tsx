@@ -46,35 +46,35 @@ export default async function JobDetailPage({ params }: PageProps<"/isler/[id]">
 
   return (
     <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">
-      <Link href="/isler" className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-slate-600 transition-colors hover:text-slate-900">
+      <Link href="/isler" className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-foreground-secondary transition-colors hover:text-foreground">
         <ArrowLeftIcon className="h-4 w-4" />
         İşler
       </Link>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-xs">
+      <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-xs font-semibold tracking-wide text-brand-700 uppercase">{job.code}</p>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{job.title}</h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground">{job.title}</h1>
           </div>
           <StatusBadge status={job.status} />
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
+        <div className="mt-5 grid grid-cols-1 gap-5 border-t border-ui-border-subtle pt-5 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">İş Bilgileri</h2>
+            <h2 className="text-sm font-semibold text-foreground">İş Bilgileri</h2>
             <dl className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div><dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">İş Tutarı</dt><dd className="mt-1 text-sm font-semibold text-slate-900 tabular-nums">{formatCurrency(job.amount)}</dd></div>
-              <div><dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">Başlangıç</dt><dd className="mt-1 text-sm font-medium text-slate-900 tabular-nums">{formatDate(job.startDate)}</dd></div>
-              <div><dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">Hedef Tarih</dt><dd className="mt-1 text-sm font-medium text-slate-900 tabular-nums">{formatDate(job.targetDate)}</dd></div>
+              <div><dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">İş Tutarı</dt><dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(job.amount)}</dd></div>
+              <div><dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">Başlangıç</dt><dd className="mt-1 text-sm font-medium text-foreground tabular-nums">{formatDate(job.startDate)}</dd></div>
+              <div><dt className="text-xs font-medium tracking-wide text-foreground-muted uppercase">Hedef Tarih</dt><dd className="mt-1 text-sm font-medium text-foreground tabular-nums">{formatDate(job.targetDate)}</dd></div>
             </dl>
           </div>
 
-          <div className="border-t border-slate-100 pt-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
-            <h2 className="text-sm font-semibold text-slate-900">Müşteri Bilgileri</h2>
+          <div className="border-t border-ui-border-subtle pt-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
+            <h2 className="text-sm font-semibold text-foreground">Müşteri Bilgileri</h2>
             <Link href={`/musteriler/${job.customer.id}`} className="mt-3 inline-flex rounded-sm text-sm font-semibold text-brand-700 hover:text-brand-800">{job.customer.name}</Link>
-            <p className="mt-1 text-sm text-slate-600">{job.customer.contact} · {job.customer.phone}</p>
-            <p className="mt-1 text-sm break-words text-slate-500">{job.customer.email}</p>
+            <p className="mt-1 text-sm text-foreground-secondary">{job.customer.contact} · {job.customer.phone}</p>
+            <p className="mt-1 text-sm break-words text-foreground-muted">{job.customer.email}</p>
           </div>
         </div>
       </section>

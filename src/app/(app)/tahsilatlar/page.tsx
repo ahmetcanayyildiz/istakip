@@ -20,8 +20,8 @@ export default function TahsilatlarPage() {
   return (
     <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Tahsilatlar</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Tahsilatlar</h1>
+        <p className="mt-1 text-sm text-foreground-muted">
           Tahsil edilen, vadesi beklenen ve gecikmiş ödemeleri ayrı olarak takip edin.
         </p>
       </div>

@@ -29,8 +29,8 @@ export default function GiderlerPage() {
   return (
     <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Giderler</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Giderler</h1>
+        <p className="mt-1 text-sm text-foreground-muted">
           İşlere ait giderleri ve kategori dağılımını tek listede takip edin.
         </p>
       </div>

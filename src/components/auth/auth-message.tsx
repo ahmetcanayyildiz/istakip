@@ -6,8 +6,8 @@ export default function AuthMessage({
   children: string;
 }) {
   const styles = {
-    error: "border-rose-200 bg-rose-50 text-rose-800",
-    success: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    error: "border-danger-border bg-danger-soft text-danger",
+    success: "border-success-border bg-success-soft text-success",
     info: "border-brand-200 bg-brand-50 text-brand-900",
   }[tone];
 

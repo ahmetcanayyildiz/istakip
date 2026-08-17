@@ -12,10 +12,10 @@ export default function TekliflerPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Teklifler</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Teklifler</h1>
+        <p className="mt-1 text-sm text-foreground-muted">
           Müşterilere hazırlanan teklifleri, tutarlarını ve güncel durumlarını takip edin.
-          Toplam <span className="font-medium text-slate-700 tabular-nums">{QUOTES.length}</span>{" "}
+          Toplam <span className="font-medium text-foreground-secondary tabular-nums">{QUOTES.length}</span>{" "}
           teklif kayıtlı.
         </p>
       </div>

@@ -61,8 +61,8 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Dashboard</h1>
+        <p className="mt-1 text-sm text-foreground-muted">
           Mevcut iş, gider ve tahsilat kayıtlarından hesaplanan genel finansal özet.
         </p>
       </div>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
         <SectionPanel title="Son İşler" description="Ana iş verisindeki son 5 kayıt" href="/isler">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] border-collapse text-left">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>İş</th>
                   <th scope="col" className={TH_CLASS}>Müşteri</th>
@@ -88,16 +88,16 @@ export default function DashboardPage() {
                   <th scope="col" className={`${TH_CLASS} text-right`}>Tutar</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ui-border-subtle">
                 {recentJobs.map((job) => (
                   <tr key={job.code} className={TR_CLASS}>
                     <td className={TD_CLASS}>
-                      <span className="block font-medium text-slate-900">{job.title}</span>
-                      <span className="mt-0.5 block text-xs text-slate-500">{job.code} · {formatDate(job.startDate)}</span>
+                      <span className="block font-medium text-foreground">{job.title}</span>
+                      <span className="mt-0.5 block text-xs text-foreground-muted">{job.code} · {formatDate(job.startDate)}</span>
                     </td>
                     <td className={TD_CLASS}>{job.customer.name}</td>
                     <td className={TD_CLASS}><StatusBadge status={job.status} /></td>
-                    <td className={`${TD_CLASS} text-right font-medium text-slate-900 tabular-nums`}>{formatCurrency(job.amount)}</td>
+                    <td className={`${TD_CLASS} text-right font-medium text-foreground tabular-nums`}>{formatCurrency(job.amount)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -108,7 +108,7 @@ export default function DashboardPage() {
         <SectionPanel title="Son Teklifler" description="Ana teklif verisindeki son 5 kayıt" href="/teklifler">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] border-collapse text-left">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>Teklif</th>
                   <th scope="col" className={TH_CLASS}>Müşteri</th>
@@ -116,16 +116,16 @@ export default function DashboardPage() {
                   <th scope="col" className={`${TH_CLASS} text-right`}>Tutar</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ui-border-subtle">
                 {recentQuotes.map((quote) => (
                   <tr key={quote.code} className={TR_CLASS}>
                     <td className={TD_CLASS}>
-                      <span className="block font-medium text-slate-900">{quote.code}</span>
-                      <span className="mt-0.5 block text-xs text-slate-500">{quote.createdAt}</span>
+                      <span className="block font-medium text-foreground">{quote.code}</span>
+                      <span className="mt-0.5 block text-xs text-foreground-muted">{quote.createdAt}</span>
                     </td>
                     <td className={TD_CLASS}>{quote.customer.name}</td>
                     <td className={TD_CLASS}><StatusBadge status={quote.status} /></td>
-                    <td className={`${TD_CLASS} text-right font-medium text-slate-900 tabular-nums`}>{formatCurrency(calculateQuoteTotals(quote).grandTotal)}</td>
+                    <td className={`${TD_CLASS} text-right font-medium text-foreground tabular-nums`}>{formatCurrency(calculateQuoteTotals(quote).grandTotal)}</td>
                   </tr>
                 ))}
               </tbody>

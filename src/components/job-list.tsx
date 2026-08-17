@@ -51,8 +51,8 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
   };
 
   return (
-    <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xs">
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+    <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
+      <div className="flex flex-col gap-3 border-b border-ui-border px-4 py-4 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
         <SearchField
           id="is-arama"
           label="İş ara"
@@ -81,7 +81,7 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
         />
       ) : (
         <>
-          <div className="divide-y divide-slate-100 lg:hidden">
+          <div className="divide-y divide-ui-border-subtle lg:hidden">
             {filtered.map((job) => (
               <div
                 key={job.id}
@@ -94,29 +94,29 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
                     openJob(job.id);
                   }
                 }}
-                className="cursor-pointer px-4 py-4 transition-colors hover:bg-slate-50 focus-visible:bg-brand-50"
+                className="cursor-pointer px-4 py-4 transition-colors hover:bg-surface-hover focus-visible:bg-brand-50"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <span className="text-xs font-semibold tracking-wide text-brand-700">{job.code}</span>
-                    <h3 className="mt-1 text-sm font-semibold text-slate-900">{job.title}</h3>
+                    <h3 className="mt-1 text-sm font-semibold text-foreground">{job.title}</h3>
                     <Link
                       href={`/musteriler/${job.customer.id}`}
                       onClick={(event) => event.stopPropagation()}
-                      className="mt-0.5 inline-flex rounded-sm text-sm text-slate-500 hover:text-brand-700"
+                      className="mt-0.5 inline-flex rounded-sm text-sm text-foreground-muted hover:text-brand-700"
                     >
                       {job.customer.name}
                     </Link>
                   </div>
-                  <ChevronRightIcon className="mt-1 h-4 w-4 shrink-0 text-slate-300" />
+                  <ChevronRightIcon className="mt-1 h-4 w-4 shrink-0 text-foreground-faint" />
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                  <div><dt className="text-xs text-slate-500">Durum</dt><dd className="mt-1"><StatusBadge status={job.status} /></dd></div>
-                  <div><dt className="text-xs text-slate-500">İş Tutarı</dt><dd className="mt-1 font-medium text-slate-900 tabular-nums">{formatCurrency(job.amount)}</dd></div>
-                  <div><dt className="text-xs text-slate-500">Başlangıç</dt><dd className="mt-0.5 text-slate-700 tabular-nums">{formatDate(job.startDate)}</dd></div>
-                  <div><dt className="text-xs text-slate-500">Hedef</dt><dd className="mt-0.5 text-slate-700 tabular-nums">{formatDate(job.targetDate)}</dd></div>
-                  <div><dt className="text-xs text-slate-500">Toplam Gider</dt><dd className="mt-0.5 text-slate-700 tabular-nums">{formatCurrency(job.totalExpenses)}</dd></div>
-                  <div><dt className="text-xs text-slate-500">Tahmini Kâr</dt><dd className="mt-0.5 font-medium text-slate-900 tabular-nums">{formatCurrency(job.estimatedProfit)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Durum</dt><dd className="mt-1"><StatusBadge status={job.status} /></dd></div>
+                  <div><dt className="text-xs text-foreground-muted">İş Tutarı</dt><dd className="mt-1 font-medium text-foreground tabular-nums">{formatCurrency(job.amount)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Başlangıç</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatDate(job.startDate)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Hedef</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatDate(job.targetDate)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Toplam Gider</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatCurrency(job.totalExpenses)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Tahmini Kâr</dt><dd className="mt-0.5 font-medium text-foreground tabular-nums">{formatCurrency(job.estimatedProfit)}</dd></div>
                 </dl>
               </div>
             ))}
@@ -124,7 +124,7 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
 
           <div className="hidden overflow-x-auto lg:block">
             <table className="w-full min-w-[78rem] border-collapse text-left">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>İş No</th>
                   <th scope="col" className={TH_CLASS}>İş Adı</th>
@@ -138,7 +138,7 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
                   <th scope="col" className="w-10"><span className="sr-only">Detay</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ui-border-subtle">
                 {filtered.map((job) => (
                   <tr
                     key={job.id}
@@ -155,17 +155,17 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
                     className={`${TR_CLASS} cursor-pointer focus-visible:bg-brand-50`}
                   >
                     <td className={`${TD_CLASS} font-semibold whitespace-nowrap text-brand-700`}>{job.code}</td>
-                    <td className={`${TD_CLASS} max-w-64`}><span className="block truncate font-medium text-slate-900">{job.title}</span></td>
+                    <td className={`${TD_CLASS} max-w-64`}><span className="block truncate font-medium text-foreground">{job.title}</span></td>
                     <td className={TD_CLASS}>
                       <Link href={`/musteriler/${job.customer.id}`} onClick={(event) => event.stopPropagation()} className="rounded-sm hover:text-brand-700">{job.customer.name}</Link>
                     </td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(job.startDate)}</td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(job.targetDate)}</td>
                     <td className={TD_CLASS}><StatusBadge status={job.status} /></td>
-                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-slate-900 tabular-nums`}>{formatCurrency(job.amount)}</td>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(job.amount)}</td>
                     <td className={`${TD_CLASS} text-right whitespace-nowrap tabular-nums`}>{formatCurrency(job.totalExpenses)}</td>
-                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-slate-900 tabular-nums`}>{formatCurrency(job.estimatedProfit)}</td>
-                    <td className={`${TD_CLASS} text-right`}><ChevronRightIcon className="ml-auto h-4 w-4 text-slate-300" /></td>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(job.estimatedProfit)}</td>
+                    <td className={`${TD_CLASS} text-right`}><ChevronRightIcon className="ml-auto h-4 w-4 text-foreground-faint" /></td>
                   </tr>
                 ))}
               </tbody>
@@ -175,7 +175,7 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
       )}
 
       {filtered.length > 0 ? (
-        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:px-5">
+        <div className="flex items-center justify-between border-t border-ui-border px-4 py-3 text-xs text-foreground-muted sm:px-5">
           <span className="tabular-nums">{filtered.length} / {jobs.length} iş gösteriliyor</span>
           {isFiltered ? <button type="button" onClick={resetFilters} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">Filtreleri temizle</button> : null}
         </div>

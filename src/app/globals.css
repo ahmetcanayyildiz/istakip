@@ -1,19 +1,137 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-page: var(--theme-page);
+  --color-surface: var(--theme-surface);
+  --color-surface-muted: var(--theme-surface-muted);
+  --color-surface-strong: var(--theme-surface-strong);
+  --color-surface-hover: var(--theme-surface-hover);
+  --color-ui-border: var(--theme-border);
+  --color-ui-border-subtle: var(--theme-border-subtle);
+  --color-ui-border-strong: var(--theme-border-strong);
+  --color-ui-border-emphasis: var(--theme-border-emphasis);
+  --color-foreground: var(--theme-text-primary);
+  --color-foreground-secondary: var(--theme-text-secondary);
+  --color-foreground-muted: var(--theme-text-muted);
+  --color-foreground-subtle: var(--theme-text-subtle);
+  --color-foreground-faint: var(--theme-text-faint);
+  --color-control-disabled: var(--theme-control-disabled);
+  --color-avatar: var(--theme-avatar);
+  --color-brand-50: var(--theme-brand-50);
+  --color-brand-100: var(--theme-brand-100);
+  --color-brand-200: var(--theme-brand-200);
+  --color-brand-600: var(--theme-brand-600);
+  --color-brand-700: var(--theme-brand-700);
+  --color-brand-800: var(--theme-brand-800);
+  --color-brand-900: var(--theme-brand-900);
+  --color-brand-action: var(--theme-brand-action);
+  --color-brand-action-hover: var(--theme-brand-action-hover);
+  --color-success-soft: var(--theme-success-soft);
+  --color-success: var(--theme-success);
+  --color-success-border: var(--theme-success-border);
+  --color-success-ring: var(--theme-success-ring);
+  --color-warning-soft: var(--theme-warning-soft);
+  --color-warning: var(--theme-warning);
+  --color-warning-border: var(--theme-warning-border);
+  --color-warning-ring: var(--theme-warning-ring);
+  --color-danger-soft: var(--theme-danger-soft);
+  --color-danger: var(--theme-danger);
+  --color-danger-border: var(--theme-danger-border);
+  --color-danger-ring: var(--theme-danger-ring);
+  --color-neutral-soft: var(--theme-neutral-soft);
+  --color-neutral: var(--theme-neutral);
+  --color-neutral-ring: var(--theme-neutral-ring);
 }
 
-/* İşTakip marka rengi: tek vurgu rengi olarak kullanılır (koyu teal). */
-@theme {
-  --color-brand-50: #f0fdfa;
-  --color-brand-100: #ccfbf1;
-  --color-brand-200: #99f6e4;
-  --color-brand-600: #0d9488;
-  --color-brand-700: #0f766e;
-  --color-brand-800: #115e59;
-  --color-brand-900: #134e4a;
+:root {
+  color-scheme: light;
+  --theme-page: #f8fafc;
+  --theme-surface: #ffffff;
+  --theme-surface-muted: #f8fafc;
+  --theme-surface-strong: #f1f5f9;
+  --theme-surface-hover: #f8fafc;
+  --theme-border: #e2e8f0;
+  --theme-border-subtle: #f1f5f9;
+  --theme-border-strong: #cbd5e1;
+  --theme-border-emphasis: #94a3b8;
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #64748b;
+  --theme-text-subtle: #94a3b8;
+  --theme-text-faint: #cbd5e1;
+  --theme-control-disabled: #cbd5e1;
+  --theme-avatar: #1e293b;
+  --theme-brand-50: #f0fdfa;
+  --theme-brand-100: #ccfbf1;
+  --theme-brand-200: #99f6e4;
+  --theme-brand-600: #0d9488;
+  --theme-brand-700: #0f766e;
+  --theme-brand-800: #115e59;
+  --theme-brand-900: #134e4a;
+  --theme-brand-action: #0f766e;
+  --theme-brand-action-hover: #115e59;
+  --theme-success-soft: #ecfdf5;
+  --theme-success: #065f46;
+  --theme-success-border: #a7f3d0;
+  --theme-success-ring: rgb(5 150 105 / 20%);
+  --theme-warning-soft: #fffbeb;
+  --theme-warning: #92400e;
+  --theme-warning-border: #fde68a;
+  --theme-warning-ring: rgb(217 119 6 / 22%);
+  --theme-danger-soft: #fff1f2;
+  --theme-danger: #9f1239;
+  --theme-danger-border: #fecdd3;
+  --theme-danger-ring: rgb(225 29 72 / 20%);
+  --theme-neutral-soft: #f1f5f9;
+  --theme-neutral: #334155;
+  --theme-neutral-ring: rgb(100 116 139 / 22%);
+}
+
+html.dark {
+  color-scheme: dark;
+  --theme-page: #0f172a;
+  --theme-surface: #172033;
+  --theme-surface-muted: #1e293b;
+  --theme-surface-strong: #263449;
+  --theme-surface-hover: #223047;
+  --theme-border: #334155;
+  --theme-border-subtle: #263449;
+  --theme-border-strong: #475569;
+  --theme-border-emphasis: #64748b;
+  --theme-text-primary: #f1f5f9;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #9aa9bd;
+  --theme-text-subtle: #94a3b8;
+  --theme-text-faint: #64748b;
+  --theme-control-disabled: #475569;
+  --theme-avatar: #334155;
+  --theme-brand-50: #123a37;
+  --theme-brand-100: #164e4b;
+  --theme-brand-200: #237c75;
+  --theme-brand-600: #2dd4bf;
+  --theme-brand-700: #5eead4;
+  --theme-brand-800: #99f6e4;
+  --theme-brand-900: #ccfbf1;
+  --theme-brand-action: #0f766e;
+  --theme-brand-action-hover: #0d9488;
+  --theme-success-soft: #12372d;
+  --theme-success: #86efac;
+  --theme-success-border: #276749;
+  --theme-success-ring: rgb(52 211 153 / 38%);
+  --theme-warning-soft: #422b12;
+  --theme-warning: #fcd34d;
+  --theme-warning-border: #78551d;
+  --theme-warning-ring: rgb(251 191 36 / 38%);
+  --theme-danger-soft: #431c2a;
+  --theme-danger: #fda4af;
+  --theme-danger-border: #7f3044;
+  --theme-danger-ring: rgb(251 113 133 / 38%);
+  --theme-neutral-soft: #263449;
+  --theme-neutral: #cbd5e1;
+  --theme-neutral-ring: rgb(148 163 184 / 34%);
 }
 
 @layer base {
@@ -21,6 +139,8 @@
   body {
     max-width: 100%;
     overflow-x: clip;
+    background-color: var(--theme-page);
+    color: var(--theme-text-primary);
   }
 
   :focus-visible {
@@ -29,7 +149,21 @@
   }
 
   ::selection {
-    background-color: var(--color-brand-100);
-    color: var(--color-brand-900);
+    background-color: var(--theme-brand-100);
+    color: var(--theme-brand-900);
+  }
+
+  input,
+  select {
+    color-scheme: inherit;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--theme-text-primary) !important;
+    caret-color: var(--theme-text-primary);
+    -webkit-box-shadow: 0 0 0 1000px var(--theme-surface) inset !important;
+    box-shadow: 0 0 0 1000px var(--theme-surface) inset !important;
   }
 }

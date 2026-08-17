@@ -79,20 +79,20 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
   const openQuote = (id: string) => router.push(`/teklifler/${id}`);
 
   return (
-    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xs">
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 sm:px-5 xl:flex-row xl:items-center xl:justify-between">
+    <section className="overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
+      <div className="flex flex-col gap-3 border-b border-ui-border px-4 py-4 sm:px-5 xl:flex-row xl:items-center xl:justify-between">
         <div className="relative w-full xl:max-w-sm">
           <label htmlFor="teklif-arama" className="sr-only">
             Teklif ara
           </label>
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground-subtle" />
           <input
             id="teklif-arama"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Teklif no, müşteri veya başlık ara"
-            className="w-full rounded-md border border-slate-200 bg-white py-2 pr-3 pl-9 text-sm text-slate-900 placeholder:text-slate-400"
+            className="w-full rounded-md border border-ui-border bg-surface py-2 pr-3 pl-9 text-sm text-foreground placeholder:text-foreground-subtle"
           />
         </div>
 
@@ -100,7 +100,7 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
           <div
             role="group"
             aria-label="Teklif durum filtresi"
-            className="flex w-max items-center gap-1 rounded-md border border-slate-200 p-0.5"
+            className="flex w-max items-center gap-1 rounded-md border border-ui-border p-0.5"
           >
             {STATUS_FILTERS.map((item) => {
               const isSelected = status === item;
@@ -114,11 +114,11 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
                   className={`rounded-sm px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
                     isSelected
                       ? "bg-brand-50 text-brand-800"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      : "text-foreground-secondary hover:bg-surface-hover hover:text-foreground"
                   }`}
                 >
                   {item}
-                  <span className="ml-1.5 text-xs text-slate-500 tabular-nums">
+                  <span className="ml-1.5 text-xs text-foreground-muted tabular-nums">
                     {counts[item]}
                   </span>
                 </button>
@@ -136,26 +136,26 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
         <div className="px-6 py-16 text-center">
           <span
             aria-hidden
-            className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-400"
+            className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-surface-strong text-foreground-subtle"
           >
             <SearchIcon className="h-5 w-5" />
           </span>
-          <h3 className="mt-3 text-sm font-semibold text-slate-900">Teklif bulunamadı</h3>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+          <h3 className="mt-3 text-sm font-semibold text-foreground">Teklif bulunamadı</h3>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-foreground-muted">
             Arama veya durum filtresine uyan teklif yok. Farklı bir arama deneyin ya da
             filtreleri temizleyin.
           </p>
           <button
             type="button"
             onClick={resetFilters}
-            className="mt-4 inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50"
+            className="mt-4 inline-flex items-center rounded-md border border-ui-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground-secondary shadow-xs transition-colors hover:bg-surface-hover"
           >
             Filtreleri temizle
           </button>
         </div>
       ) : (
         <>
-          <div className="divide-y divide-slate-100 md:hidden">
+          <div className="divide-y divide-ui-border-subtle md:hidden">
             {filtered.map((quote) => {
               const total = calculateQuoteTotals(quote).grandTotal;
 
@@ -164,33 +164,33 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
                   key={quote.id}
                   type="button"
                   onClick={() => openQuote(quote.id)}
-                  className="block w-full px-4 py-4 text-left transition-colors hover:bg-slate-50"
+                  className="block w-full px-4 py-4 text-left transition-colors hover:bg-surface-hover"
                 >
                   <span className="flex items-start justify-between gap-3">
                     <span className="min-w-0">
                       <span className="block text-xs font-semibold tracking-wide text-brand-700">
                         {quote.code}
                       </span>
-                      <span className="mt-1 block truncate text-sm font-semibold text-slate-900">
+                      <span className="mt-1 block truncate text-sm font-semibold text-foreground">
                         {quote.title}
                       </span>
-                      <span className="mt-0.5 block truncate text-sm text-slate-500">
+                      <span className="mt-0.5 block truncate text-sm text-foreground-muted">
                         {quote.customer.name}
                       </span>
                     </span>
-                    <ChevronRightIcon className="mt-1 h-4 w-4 shrink-0 text-slate-300" />
+                    <ChevronRightIcon className="mt-1 h-4 w-4 shrink-0 text-foreground-faint" />
                   </span>
 
                   <span className="mt-3 flex items-end justify-between gap-3">
                     <span>
-                      <span className="block text-xs text-slate-500">Geçerlilik</span>
-                      <span className="mt-0.5 block text-sm text-slate-700 tabular-nums">
+                      <span className="block text-xs text-foreground-muted">Geçerlilik</span>
+                      <span className="mt-0.5 block text-sm text-foreground-secondary tabular-nums">
                         {quote.validUntil}
                       </span>
                     </span>
                     <span className="flex flex-col items-end gap-2">
                       <StatusBadge status={quote.status} />
-                      <span className="text-sm font-semibold text-slate-900 tabular-nums">
+                      <span className="text-sm font-semibold text-foreground tabular-nums">
                         {formatCurrency(total)}
                       </span>
                     </span>
@@ -202,7 +202,7 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
 
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[74rem] border-collapse text-left">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>Teklif No</th>
                   <th scope="col" className={TH_CLASS}>Müşteri</th>
@@ -217,7 +217,7 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ui-border-subtle">
                 {filtered.map((quote) => (
                   <tr
                     key={quote.id}
@@ -238,17 +238,17 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
                     </td>
                     <td className={TD_CLASS}>{quote.customer.name}</td>
                     <td className={`${TD_CLASS} max-w-72`}>
-                      <span className="block truncate font-medium text-slate-900">{quote.title}</span>
+                      <span className="block truncate font-medium text-foreground">{quote.title}</span>
                     </td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{quote.createdAt}</td>
-                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-slate-900 tabular-nums`}>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>
                       {formatCurrency(calculateQuoteTotals(quote).grandTotal)}
                     </td>
                     <td className={TD_CLASS}><StatusBadge status={quote.status} /></td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{quote.validUntil}</td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{quote.updatedAt}</td>
                     <td className={`${TD_CLASS} text-right`}>
-                      <ChevronRightIcon className="ml-auto h-4 w-4 text-slate-300" />
+                      <ChevronRightIcon className="ml-auto h-4 w-4 text-foreground-faint" />
                     </td>
                   </tr>
                 ))}
@@ -259,7 +259,7 @@ export default function QuoteList({ quotes }: { quotes: Quote[] }) {
       )}
 
       {filtered.length > 0 ? (
-        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:px-5">
+        <div className="flex items-center justify-between border-t border-ui-border px-4 py-3 text-xs text-foreground-muted sm:px-5">
           <span className="tabular-nums">
             {filtered.length} / {quotes.length} teklif gösteriliyor
           </span>

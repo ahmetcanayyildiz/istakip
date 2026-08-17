@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { LogoMark } from "@/components/icons";
+import ThemeToggle from "@/components/theme-toggle";
 
 export default function AuthShell({
   title,
@@ -20,20 +21,23 @@ export default function AuthShell({
         <div className="mb-6 flex items-center justify-between gap-4">
           <Link href="/" className="inline-flex items-center gap-2.5 rounded-sm">
             <LogoMark className="h-9 w-9" />
-            <span className="text-lg font-semibold tracking-tight text-slate-900">İşTakip</span>
+            <span className="text-lg font-semibold tracking-tight text-foreground">İşTakip</span>
           </Link>
-          {accessory}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {accessory}
+          </div>
         </div>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-xs sm:p-7">
+        <section className="rounded-lg border border-ui-border bg-surface p-6 shadow-xs sm:p-7">
           <header>
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
-            <p className="mt-1.5 text-sm leading-6 text-slate-500">{description}</p>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
+            <p className="mt-1.5 text-sm leading-6 text-foreground-muted">{description}</p>
           </header>
           <div className="mt-6">{children}</div>
         </section>
 
-        <p className="mt-5 text-center text-xs text-slate-500">
+        <p className="mt-5 text-center text-xs text-foreground-muted">
           Müşteri, teklif, iş ve finans süreçlerin tek yerde.
         </p>
       </div>

@@ -48,8 +48,8 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
   };
 
   return (
-    <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xs">
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 sm:px-5 xl:flex-row xl:items-center xl:justify-between">
+    <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
+      <div className="flex flex-col gap-3 border-b border-ui-border px-4 py-4 sm:px-5 xl:flex-row xl:items-center xl:justify-between">
         <SearchField id="gider-arama" label="Gider ara" placeholder="Açıklama, iş veya müşteri ara" value={query} onChange={setQuery} />
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <SelectFilter
@@ -75,7 +75,7 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
         <FilterEmptyState title="Gider bulunamadı" description="Arama ve filtrelere uyan gider kaydı yok. Filtreleri temizleyip yeniden deneyin." onReset={resetFilters} />
       ) : (
         <>
-          <div className="divide-y divide-slate-100 md:hidden">
+          <div className="divide-y divide-ui-border-subtle md:hidden">
             {filtered.map((expense) => {
               const job = jobMap.get(expense.jobId);
               if (!job) return null;
@@ -84,14 +84,14 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
                 <article key={expense.id} className="px-4 py-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-slate-900">{expense.description}</h3>
-                      <p className="mt-0.5 text-xs text-slate-500 tabular-nums">{formatDate(expense.date)} · {expense.category}</p>
+                      <h3 className="text-sm font-semibold text-foreground">{expense.description}</h3>
+                      <p className="mt-0.5 text-xs text-foreground-muted tabular-nums">{formatDate(expense.date)} · {expense.category}</p>
                     </div>
-                    <span className="shrink-0 text-sm font-semibold text-slate-900 tabular-nums">{formatCurrency(expense.amount)}</span>
+                    <span className="shrink-0 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(expense.amount)}</span>
                   </div>
                   <div className="mt-3 flex flex-col gap-1 text-sm">
                     <Link href={`/isler/${job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link>
-                    <Link href={`/musteriler/${job.customer.id}`} className="w-fit rounded-sm text-slate-500 hover:text-brand-700">{job.customer.name}</Link>
+                    <Link href={`/musteriler/${job.customer.id}`} className="w-fit rounded-sm text-foreground-muted hover:text-brand-700">{job.customer.name}</Link>
                   </div>
                 </article>
               );
@@ -100,7 +100,7 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
 
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[64rem] border-collapse text-left">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>Tarih</th>
                   <th scope="col" className={TH_CLASS}>Açıklama</th>
@@ -110,7 +110,7 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
                   <th scope="col" className={`${TH_CLASS} text-right`}>Tutar</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ui-border-subtle">
                 {filtered.map((expense) => {
                   const job = jobMap.get(expense.jobId);
                   if (!job) return null;
@@ -118,11 +118,11 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
                   return (
                     <tr key={expense.id} className={TR_CLASS}>
                       <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(expense.date)}</td>
-                      <td className={`${TD_CLASS} font-medium text-slate-900`}>{expense.description}</td>
+                      <td className={`${TD_CLASS} font-medium text-foreground`}>{expense.description}</td>
                       <td className={TD_CLASS}>{expense.category}</td>
                       <td className={TD_CLASS}><Link href={`/isler/${job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link></td>
                       <td className={TD_CLASS}><Link href={`/musteriler/${job.customer.id}`} className="rounded-sm hover:text-brand-700">{job.customer.name}</Link></td>
-                      <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-slate-900 tabular-nums`}>{formatCurrency(expense.amount)}</td>
+                      <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(expense.amount)}</td>
                     </tr>
                   );
                 })}
@@ -133,7 +133,7 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
       )}
 
       {filtered.length > 0 ? (
-        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:px-5">
+        <div className="flex items-center justify-between border-t border-ui-border px-4 py-3 text-xs text-foreground-muted sm:px-5">
           <span className="tabular-nums">{filtered.length} / {expenses.length} gider gösteriliyor</span>
           {isFiltered ? <button type="button" onClick={resetFilters} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">Filtreleri temizle</button> : null}
         </div>
