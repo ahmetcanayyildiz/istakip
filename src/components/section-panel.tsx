@@ -6,7 +6,7 @@ import { ChevronRightIcon } from "@/components/icons";
 type SectionPanelProps = {
   title: string;
   description?: string;
-  href: string;
+  href?: string;
   children: ReactNode;
 };
 
@@ -25,14 +25,16 @@ export default function SectionPanel({
             <p className="mt-0.5 truncate text-xs text-foreground-muted">{description}</p>
           ) : null}
         </div>
-        <Link
-          href={href}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-medium text-brand-700 transition-colors hover:text-brand-800"
-        >
-          Tümünü Gör
-          <span className="sr-only"> — {title}</span>
-          <ChevronRightIcon className="h-4 w-4" />
-        </Link>
+        {href ? (
+          <Link
+            href={href}
+            className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-medium text-brand-700 transition-colors hover:text-brand-800"
+          >
+            Tümünü Gör
+            <span className="sr-only"> — {title}</span>
+            <ChevronRightIcon className="h-4 w-4" />
+          </Link>
+        ) : null}
       </div>
       {children}
     </section>

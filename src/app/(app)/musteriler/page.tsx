@@ -1,21 +1,34 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import CustomerList from "@/components/customer-list";
+import CustomerDataError from "@/components/customers/customer-data-error";
 import { PlusIcon } from "@/components/icons";
-import { CUSTOMERS } from "@/lib/mock-customers";
-import { getCustomerFinancials } from "@/lib/mock-finance";
+import { getCustomers } from "@/lib/customers/data";
 
 export const metadata: Metadata = {
   title: "Müşteriler | İşTakip",
-  description: "Müşteri kayıtları, iletişim bilgileri ve müşteri bazlı iş özeti.",
+  description: "Gerçek işletme müşteri kayıtlarını yönetin.",
 };
 
-export default function MusterilerPage() {
-  const activeCount = CUSTOMERS.filter((customer) => customer.status === "Aktif").length;
-  const customers = CUSTOMERS.map((customer) => ({
-    ...customer,
-    ...getCustomerFinancials(customer.id),
-  }));
+export default async function MusterilerPage() {
+  let customers;
+
+  try {
+    customers = await getCustomers();
+  } catch {
+    return (
+      <div className="mx-auto max-w-7xl space-y-6">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Müşteriler</h1>
+          <p className="mt-1 text-sm text-foreground-muted">İşletmenize ait müşteri kayıtları.</p>
+        </div>
+        <CustomerDataError message="Müşteri kayıtları şu anda yüklenemiyor. Lütfen daha sonra tekrar deneyin." />
+      </div>
+    );
+  }
+
+  const activeCount = customers.filter((customer) => customer.isActive).length;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -23,26 +36,19 @@ export default function MusterilerPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Müşteriler</h1>
           <p className="mt-1 text-sm text-foreground-muted">
-            Toplam <span className="font-medium text-foreground-secondary tabular-nums">{CUSTOMERS.length}</span>{" "}
+            Toplam <span className="font-medium text-foreground-secondary tabular-nums">{customers.length}</span>{" "}
             müşteri kayıtlı, <span className="font-medium text-foreground-secondary tabular-nums">{activeCount}</span>{" "}
-            tanesi aktif. Finansal değerler mevcut iş ve tahsilat kayıtlarından hesaplanır.
+            tanesi aktif.
           </p>
         </div>
 
-        <div className="flex flex-col gap-1 sm:items-end">
-          <button
-            type="button"
-            disabled
-            aria-describedby="yeni-musteri-notu"
-            className="inline-flex cursor-not-allowed items-center gap-1.5 self-start rounded-md border border-ui-border bg-surface-strong px-3 py-1.5 text-sm font-medium text-foreground-subtle"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Yeni Müşteri
-          </button>
-          <p id="yeni-musteri-notu" className="text-xs text-foreground-muted">
-            Kayıt ekleme sonraki aşamada eklenecek.
-          </p>
-        </div>
+        <Link
+          href="/musteriler/yeni"
+          className="inline-flex min-h-10 items-center justify-center gap-1.5 self-start rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Yeni Müşteri
+        </Link>
       </div>
 
       <CustomerList customers={customers} />

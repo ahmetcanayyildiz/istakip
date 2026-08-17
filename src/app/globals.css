@@ -41,6 +41,7 @@
   --color-danger: var(--theme-danger);
   --color-danger-border: var(--theme-danger-border);
   --color-danger-ring: var(--theme-danger-ring);
+  --color-danger-action: var(--theme-danger-action);
   --color-neutral-soft: var(--theme-neutral-soft);
   --color-neutral: var(--theme-neutral);
   --color-neutral-ring: var(--theme-neutral-ring);
@@ -85,6 +86,7 @@
   --theme-danger: #9f1239;
   --theme-danger-border: #fecdd3;
   --theme-danger-ring: rgb(225 29 72 / 20%);
+  --theme-danger-action: #be123c;
   --theme-neutral-soft: #f1f5f9;
   --theme-neutral: #334155;
   --theme-neutral-ring: rgb(100 116 139 / 22%);
@@ -129,6 +131,7 @@ html.dark {
   --theme-danger: #fda4af;
   --theme-danger-border: #7f3044;
   --theme-danger-ring: rgb(251 113 133 / 38%);
+  --theme-danger-action: #be123c;
   --theme-neutral-soft: #263449;
   --theme-neutral: #cbd5e1;
   --theme-neutral-ring: rgb(148 163 184 / 34%);
