@@ -3,12 +3,31 @@
 import { usePathname } from "next/navigation";
 
 import { LogoMark } from "@/components/icons";
+import LogoutButton from "@/components/logout-button";
 import { NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
-export default function AppHeader() {
+function getInitials(value: string) {
+  return value
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toLocaleUpperCase("tr-TR");
+}
+
+export default function AppHeader({
+  companyName,
+  fullName,
+}: {
+  companyName: string;
+  fullName: string | null;
+}) {
   const pathname = usePathname();
   const currentItem = NAV_ITEMS.find((item) => isActiveRoute(pathname, item.href));
   const currentLabel = currentItem?.label ?? "İşTakip";
+  const displayName = fullName || "Kullanıcı";
+  const initials = getInitials(fullName || companyName) || "İT";
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
@@ -29,16 +48,17 @@ export default function AppHeader() {
 
       <div className="flex items-center gap-3">
         <div className="hidden text-right sm:block">
-          <p className="text-sm font-medium text-slate-900">Demo İşletme</p>
-          <p className="text-xs text-slate-500">Yönetici</p>
+          <p className="max-w-44 truncate text-sm font-medium text-slate-900">{companyName}</p>
+          <p className="max-w-44 truncate text-xs text-slate-500">{displayName}</p>
         </div>
         <span
           aria-hidden
           className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-sm font-medium text-white"
         >
-          Dİ
+          {initials}
         </span>
-        <span className="sr-only">Oturum: Demo İşletme, Yönetici</span>
+        <span className="sr-only">Oturum: {companyName}, {displayName}</span>
+        <LogoutButton />
       </div>
     </header>
   );
