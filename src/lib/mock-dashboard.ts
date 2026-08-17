@@ -55,9 +55,9 @@ export const SUMMARY_CARDS: StatCardProps[] = [
   },
   {
     label: "Bekleyen Teklifler",
-    value: "5",
+    value: "1",
     icon: DocumentIcon,
-    hint: `Toplam ${formatCurrency(148000)} değerinde`,
+    hint: `Toplam ${formatCurrency(28500)} değerinde`,
   },
 ];
 
@@ -126,35 +126,35 @@ export const RECENT_QUOTES: RecentQuote[] = [
     code: "TKL-2026-118",
     customer: "Marmara Lojistik",
     status: "Gönderildi",
-    amount: 58000,
+    amount: 57600,
     date: "15.08.2026",
   },
   {
     code: "TKL-2026-117",
     customer: "Aydın Mobilya",
     status: "Onaylandı",
-    amount: 64500,
+    amount: 77400,
     date: "12.08.2026",
   },
   {
     code: "TKL-2026-116",
     customer: "Sönmez Market",
     status: "Beklemede",
-    amount: 23750,
+    amount: 28500,
     date: "10.08.2026",
   },
   {
     code: "TKL-2026-115",
     customer: "Kaya İnşaat",
     status: "Onaylandı",
-    amount: 128000,
+    amount: 144000,
     date: "07.08.2026",
   },
   {
     code: "TKL-2026-114",
     customer: "Batı Yapı Market",
     status: "Reddedildi",
-    amount: 31200,
+    amount: 37440,
     date: "03.08.2026",
   },
 ];
