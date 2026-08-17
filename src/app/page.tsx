@@ -9,10 +9,7 @@ import {
   RECENT_QUOTES,
   SUMMARY_CARDS,
 } from "@/lib/mock-dashboard";
-
-const thClass =
-  "px-5 py-2.5 text-left text-xs font-medium tracking-wide text-slate-500 uppercase";
-const tdClass = "px-5 py-3.5 text-sm text-slate-600 align-middle";
+import { TD_CLASS, TH_CLASS, TR_CLASS } from "@/lib/table-styles";
 
 export default function DashboardPage() {
   return (
@@ -47,35 +44,35 @@ export default function DashboardPage() {
             <table className="w-full min-w-[34rem] border-collapse text-left">
               <thead className="border-b border-slate-200 bg-slate-50">
                 <tr>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     İş
                   </th>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     Müşteri
                   </th>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     Durum
                   </th>
-                  <th scope="col" className={`${thClass} text-right`}>
+                  <th scope="col" className={`${TH_CLASS} text-right`}>
                     Tutar
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {RECENT_JOBS.map((job) => (
-                  <tr key={job.code} className="transition-colors hover:bg-slate-50">
-                    <td className={tdClass}>
+                  <tr key={job.code} className={TR_CLASS}>
+                    <td className={TD_CLASS}>
                       <span className="block font-medium text-slate-900">{job.title}</span>
                       <span className="mt-0.5 block text-xs text-slate-500">
                         {job.code} · {job.date}
                       </span>
                     </td>
-                    <td className={tdClass}>{job.customer}</td>
-                    <td className={tdClass}>
+                    <td className={TD_CLASS}>{job.customer}</td>
+                    <td className={TD_CLASS}>
                       <StatusBadge status={job.status} />
                     </td>
                     <td
-                      className={`${tdClass} text-right font-medium text-slate-900 tabular-nums`}
+                      className={`${TD_CLASS} text-right font-medium text-slate-900 tabular-nums`}
                     >
                       {formatCurrency(job.amount)}
                     </td>
@@ -91,33 +88,33 @@ export default function DashboardPage() {
             <table className="w-full min-w-[34rem] border-collapse text-left">
               <thead className="border-b border-slate-200 bg-slate-50">
                 <tr>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     Teklif
                   </th>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     Müşteri
                   </th>
-                  <th scope="col" className={thClass}>
+                  <th scope="col" className={TH_CLASS}>
                     Durum
                   </th>
-                  <th scope="col" className={`${thClass} text-right`}>
+                  <th scope="col" className={`${TH_CLASS} text-right`}>
                     Tutar
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {RECENT_QUOTES.map((quote) => (
-                  <tr key={quote.code} className="transition-colors hover:bg-slate-50">
-                    <td className={tdClass}>
+                  <tr key={quote.code} className={TR_CLASS}>
+                    <td className={TD_CLASS}>
                       <span className="block font-medium text-slate-900">{quote.code}</span>
                       <span className="mt-0.5 block text-xs text-slate-500">{quote.date}</span>
                     </td>
-                    <td className={tdClass}>{quote.customer}</td>
-                    <td className={tdClass}>
+                    <td className={TD_CLASS}>{quote.customer}</td>
+                    <td className={TD_CLASS}>
                       <StatusBadge status={quote.status} />
                     </td>
                     <td
-                      className={`${tdClass} text-right font-medium text-slate-900 tabular-nums`}
+                      className={`${TD_CLASS} text-right font-medium text-slate-900 tabular-nums`}
                     >
                       {formatCurrency(quote.amount)}
                     </td>

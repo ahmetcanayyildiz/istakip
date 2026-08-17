@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { NAV_ITEMS } from "@/lib/navigation";
+import { NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
 export default function MobileNav() {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ export default function MobileNav() {
     >
       <ul className="flex min-w-max items-center gap-1 px-4 py-2">
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = isActiveRoute(pathname, item.href);
           const Icon = item.icon;
 
           return (

@@ -9,6 +9,8 @@ const TONE_STYLES: Record<Tone, string> = {
 };
 
 const STATUS_TONES: Record<string, Tone> = {
+  Aktif: "positive",
+  Pasif: "neutral",
   "Devam ediyor": "progress",
   Tamamlandı: "positive",
   Onaylandı: "positive",

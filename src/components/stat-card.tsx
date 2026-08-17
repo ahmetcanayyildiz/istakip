@@ -1,7 +1,22 @@
-import { ArrowDownRightIcon, ArrowUpRightIcon } from "@/components/icons";
-import type { SummaryCard } from "@/lib/mock-dashboard";
+import type { ComponentType } from "react";
 
-export default function StatCard({ label, value, icon: Icon, trend, hint }: SummaryCard) {
+import { ArrowDownRightIcon, ArrowUpRightIcon } from "@/components/icons";
+
+export type Trend = {
+  direction: "up" | "down";
+  value: string;
+  tone: "positive" | "negative";
+};
+
+export type StatCardProps = {
+  label: string;
+  value: string;
+  icon: ComponentType<{ className?: string }>;
+  trend?: Trend;
+  hint?: string;
+};
+
+export default function StatCard({ label, value, icon: Icon, trend, hint }: StatCardProps) {
   const TrendIcon = trend?.direction === "up" ? ArrowUpRightIcon : ArrowDownRightIcon;
   const trendColor = trend?.tone === "positive" ? "text-emerald-700" : "text-rose-700";
 

@@ -1,8 +1,6 @@
 // GEÇİCİ: Dashboard'un görsel olarak çalışabilmesi için kullanılan sahte verilerdir.
 // Veritabanı aşamasına geçildiğinde bu dosya gerçek sorgularla değiştirilecektir.
 
-import type { ComponentType } from "react";
-
 import {
   BanknotesIcon,
   BriefcaseIcon,
@@ -11,6 +9,7 @@ import {
   DocumentIcon,
   ReceiptIcon,
 } from "@/components/icons";
+import type { StatCardProps } from "@/components/stat-card";
 import { formatCurrency } from "@/lib/format";
 
 export type StatusLabel =
@@ -21,23 +20,9 @@ export type StatusLabel =
   | "Gönderildi"
   | "Reddedildi";
 
-export type Trend = {
-  direction: "up" | "down";
-  value: string;
-  tone: "positive" | "negative";
-};
-
-export type SummaryCard = {
-  label: string;
-  value: string;
-  icon: ComponentType<{ className?: string }>;
-  trend?: Trend;
-  hint?: string;
-};
-
 export const PERIOD_LABEL = "Ağustos 2026";
 
-export const SUMMARY_CARDS: SummaryCard[] = [
+export const SUMMARY_CARDS: StatCardProps[] = [
   {
     label: "Toplam Ciro",
     value: formatCurrency(486750),

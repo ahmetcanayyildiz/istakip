@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { LogoMark } from "@/components/icons";
-import { NAV_ITEMS } from "@/lib/navigation";
+import { NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
 export default function AppSidebar() {
   const pathname = usePathname();
@@ -27,7 +27,7 @@ export default function AppSidebar() {
         </p>
         <ul className="space-y-0.5">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = isActiveRoute(pathname, item.href);
             const Icon = item.icon;
 
             return (

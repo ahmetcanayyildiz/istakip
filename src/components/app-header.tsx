@@ -3,11 +3,11 @@
 import { usePathname } from "next/navigation";
 
 import { LogoMark } from "@/components/icons";
-import { NAV_ITEMS } from "@/lib/navigation";
+import { NAV_ITEMS, isActiveRoute } from "@/lib/navigation";
 
 export default function AppHeader() {
   const pathname = usePathname();
-  const currentItem = NAV_ITEMS.find((item) => item.href === pathname);
+  const currentItem = NAV_ITEMS.find((item) => isActiveRoute(pathname, item.href));
   const currentLabel = currentItem?.label ?? "İşTakip";
 
   return (

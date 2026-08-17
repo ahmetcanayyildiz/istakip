@@ -15,6 +15,10 @@ export type NavItem = {
   icon: ComponentType<{ className?: string }>;
 };
 
+// Alt sayfalarda da (örn. /musteriler/aydin-mobilya) ilgili menü aktif kalır.
+export const isActiveRoute = (pathname: string, href: string) =>
+  href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/", icon: DashboardIcon },
   { label: "Müşteriler", href: "/musteriler", icon: UsersIcon },
