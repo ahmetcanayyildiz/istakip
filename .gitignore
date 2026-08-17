@@ -23,6 +23,10 @@
 # misc
 .DS_Store
 *.pem
+.claude/
+
+# Supabase local CLI state
+/supabase/.temp/
 
 # debug
 npm-debug.log*
@@ -41,6 +45,5 @@ yarn-error.log*
 next-env.d.ts
 
 # local editor / agent settings (user-specific)
-.claude/
 .vscode/
 .idea/
