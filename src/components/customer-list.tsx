@@ -8,13 +8,15 @@ import { ChevronRightIcon, SearchIcon } from "@/components/icons";
 import StatusBadge from "@/components/status-badge";
 import { formatCurrency, normalizeText } from "@/lib/format";
 import type { Customer, CustomerStatus } from "@/lib/mock-customers";
+import type { CustomerFinancials } from "@/lib/mock-finance";
 import { TD_CLASS, TH_CLASS, TR_CLASS } from "@/lib/table-styles";
 
 type StatusFilter = "Tümü" | CustomerStatus;
+export type CustomerListItem = Customer & CustomerFinancials;
 
 const STATUS_FILTERS: StatusFilter[] = ["Tümü", "Aktif", "Pasif"];
 
-export default function CustomerList({ customers }: { customers: Customer[] }) {
+export default function CustomerList({ customers }: { customers: CustomerListItem[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("Tümü");

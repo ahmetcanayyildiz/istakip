@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import CustomerList from "@/components/customer-list";
 import { PlusIcon } from "@/components/icons";
 import { CUSTOMERS } from "@/lib/mock-customers";
+import { getCustomerFinancials } from "@/lib/mock-finance";
 
 export const metadata: Metadata = {
   title: "Müşteriler | İşTakip",
@@ -11,6 +12,10 @@ export const metadata: Metadata = {
 
 export default function MusterilerPage() {
   const activeCount = CUSTOMERS.filter((customer) => customer.status === "Aktif").length;
+  const customers = CUSTOMERS.map((customer) => ({
+    ...customer,
+    ...getCustomerFinancials(customer.id),
+  }));
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -20,7 +25,7 @@ export default function MusterilerPage() {
           <p className="mt-1 text-sm text-slate-500">
             Toplam <span className="font-medium text-slate-700 tabular-nums">{CUSTOMERS.length}</span>{" "}
             müşteri kayıtlı, <span className="font-medium text-slate-700 tabular-nums">{activeCount}</span>{" "}
-            tanesi aktif.
+            tanesi aktif. Finansal değerler mevcut iş ve tahsilat kayıtlarından hesaplanır.
           </p>
         </div>
 
@@ -40,7 +45,7 @@ export default function MusterilerPage() {
         </div>
       </div>
 
-      <CustomerList customers={CUSTOMERS} />
+      <CustomerList customers={customers} />
     </div>
   );
 }

@@ -13,11 +13,18 @@ const STATUS_TONES: Record<string, Tone> = {
   Pasif: "neutral",
   Taslak: "neutral",
   "Devam ediyor": "progress",
+  "Devam Ediyor": "progress",
+  Planlandı: "neutral",
   Tamamlandı: "positive",
+  "İptal Edildi": "danger",
   Onaylandı: "positive",
   Beklemede: "warning",
   Gönderildi: "neutral",
   Reddedildi: "danger",
+  "Tahsil Edildi": "positive",
+  Bekliyor: "warning",
+  "Vadesi Beklenen": "warning",
+  Gecikmiş: "danger",
 };
 
 export default function StatusBadge({ status }: { status: string }) {

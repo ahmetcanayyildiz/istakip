@@ -39,6 +39,7 @@ export type Quote = {
 export type QuoteTotals = {
   subtotal: number;
   discount: number;
+  netTotal: number;
   vat: number;
   grandTotal: number;
 };
@@ -54,6 +55,7 @@ export const calculateQuoteTotals = (quote: Quote): QuoteTotals => {
   return {
     subtotal,
     discount: quote.discount,
+    netTotal: taxableAmount,
     vat,
     grandTotal: taxableAmount + vat,
   };
