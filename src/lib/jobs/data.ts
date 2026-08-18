@@ -4,6 +4,10 @@ import { cache } from "react";
 
 import { isUuid } from "@/lib/customers/validation";
 import {
+  EXPENSE_CATEGORY_LABELS,
+  type ExpenseCategory,
+} from "@/lib/expenses/types";
+import {
   JOB_STATUS_LABELS,
   type JobCollectionRecord,
   type JobCustomer,
@@ -40,7 +44,7 @@ type ExpenseRow = {
   id: string;
   expense_date: string;
   description: string;
-  category: "material" | "labor" | "transport" | "equipment" | "service" | "other";
+  category: ExpenseCategory;
   amount: Numeric;
 };
 
@@ -65,15 +69,6 @@ type JobRow = {
   quotes: QuoteRelation | QuoteRelation[] | null;
   expenses?: ExpenseRow[] | null;
   collections?: CollectionRow[] | null;
-};
-
-const EXPENSE_CATEGORY_LABELS: Record<ExpenseRow["category"], string> = {
-  material: "Malzeme",
-  labor: "İşçilik",
-  transport: "Ulaşım",
-  equipment: "Ekipman",
-  service: "Hizmet",
-  other: "Diğer",
 };
 
 const PAYMENT_METHOD_LABELS: Record<NonNullable<CollectionRow["payment_method"]>, string> = {

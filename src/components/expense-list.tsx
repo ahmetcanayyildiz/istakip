@@ -4,47 +4,49 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { FilterEmptyState, SearchField, SelectFilter } from "@/components/list-filters";
+import {
+  EXPENSE_CATEGORY_OPTIONS,
+  type ExpenseCategory,
+  type ExpenseListItem,
+} from "@/lib/expenses/types";
 import { formatCurrency, formatDate, normalizeText } from "@/lib/format";
-import type { Expense, ExpenseCategory } from "@/lib/mock-expenses";
-import { EXPENSE_CATEGORIES } from "@/lib/mock-expenses";
-import type { Job } from "@/lib/mock-jobs";
 import { TD_CLASS, TH_CLASS, TR_CLASS } from "@/lib/table-styles";
 
-type CategoryFilter = "Tümü" | ExpenseCategory;
+type CategoryFilter = "all" | ExpenseCategory;
 
-export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; jobs: Job[] }) {
+export default function ExpenseList({ expenses }: { expenses: ExpenseListItem[] }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<CategoryFilter>("Tümü");
-  const [jobId, setJobId] = useState("Tümü");
+  const [category, setCategory] = useState<CategoryFilter>("all");
+  const [jobId, setJobId] = useState("all");
 
-  const jobMap = useMemo(() => new Map(jobs.map((job) => [job.id, job])), [jobs]);
-  const expenseJobIds = useMemo(() => new Set(expenses.map((expense) => expense.jobId)), [expenses]);
   const jobOptions = useMemo(
-    () => jobs.filter((job) => expenseJobIds.has(job.id)),
-    [expenseJobIds, jobs],
+    () => Array.from(new Map(expenses.map((expense) => [expense.job.id, expense.job])).values()),
+    [expenses],
   );
 
   const filtered = useMemo(() => {
     const term = normalizeText(query);
 
     return expenses.filter((expense) => {
-      const job = jobMap.get(expense.jobId);
-
-      if (category !== "Tümü" && expense.category !== category) return false;
-      if (jobId !== "Tümü" && expense.jobId !== jobId) return false;
+      if (category !== "all" && expense.category !== category) return false;
+      if (jobId !== "all" && expense.job.id !== jobId) return false;
       if (!term) return true;
 
-      return [expense.description, expense.category, job?.title ?? "", job?.customer.name ?? ""].some(
-        (value) => normalizeText(value).includes(term),
-      );
+      return [
+        expense.description,
+        expense.categoryLabel,
+        expense.job.code,
+        expense.job.title,
+        expense.job.customer.name,
+      ].some((value) => normalizeText(value).includes(term));
     });
-  }, [category, expenses, jobId, jobMap, query]);
+  }, [category, expenses, jobId, query]);
 
-  const isFiltered = query.trim() !== "" || category !== "Tümü" || jobId !== "Tümü";
+  const isFiltered = query.trim() !== "" || category !== "all" || jobId !== "all";
   const resetFilters = () => {
     setQuery("");
-    setCategory("Tümü");
-    setJobId("Tümü");
+    setCategory("all");
+    setJobId("all");
   };
 
   return (
@@ -56,14 +58,20 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
             id="gider-kategori"
             label="Gider kategorisi"
             value={category}
-            options={[{ value: "Tümü", label: "Tüm kategoriler" }, ...EXPENSE_CATEGORIES.map((item) => ({ value: item, label: item }))]}
+            options={[
+              { value: "all", label: "Tüm kategoriler" },
+              ...EXPENSE_CATEGORY_OPTIONS.map((item) => ({ value: item.value, label: item.label })),
+            ]}
             onChange={(value) => setCategory(value as CategoryFilter)}
           />
           <SelectFilter
             id="gider-is"
             label="İlgili iş"
             value={jobId}
-            options={[{ value: "Tümü", label: "Tüm işler" }, ...jobOptions.map((job) => ({ value: job.id, label: job.code }))]}
+            options={[
+              { value: "all", label: "Tüm işler" },
+              ...jobOptions.map((job) => ({ value: job.id, label: `${job.code} · ${job.title}` })),
+            ]}
             onChange={setJobId}
           />
         </div>
@@ -71,31 +79,36 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
 
       <p aria-live="polite" className="sr-only">{filtered.length} gider listeleniyor.</p>
 
-      {filtered.length === 0 ? (
+      {expenses.length === 0 ? (
+        <div className="px-5 py-12 text-center">
+          <h2 className="text-sm font-semibold text-foreground">Henüz gider kaydı yok</h2>
+          <p className="mx-auto mt-1 max-w-md text-sm text-foreground-muted">
+            İşlere ait malzeme, işçilik ve diğer giderleri ekleyerek finansal takibe başlayın.
+          </p>
+          <Link href="/giderler/yeni" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
+            İlk Gideri Ekle
+          </Link>
+        </div>
+      ) : filtered.length === 0 ? (
         <FilterEmptyState title="Gider bulunamadı" description="Arama ve filtrelere uyan gider kaydı yok. Filtreleri temizleyip yeniden deneyin." onReset={resetFilters} />
       ) : (
         <>
           <div className="divide-y divide-ui-border-subtle md:hidden">
-            {filtered.map((expense) => {
-              const job = jobMap.get(expense.jobId);
-              if (!job) return null;
-
-              return (
-                <article key={expense.id} className="px-4 py-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-foreground">{expense.description}</h3>
-                      <p className="mt-0.5 text-xs text-foreground-muted tabular-nums">{formatDate(expense.date)} · {expense.category}</p>
-                    </div>
-                    <span className="shrink-0 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(expense.amount)}</span>
+            {filtered.map((expense) => (
+              <article key={expense.id} className="px-4 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground">{expense.description}</h3>
+                    <p className="mt-0.5 text-xs text-foreground-muted tabular-nums">{formatDate(expense.date)} · {expense.categoryLabel}</p>
                   </div>
-                  <div className="mt-3 flex flex-col gap-1 text-sm">
-                    <Link href={`/isler/${job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link>
-                    <Link href={`/musteriler/${job.customer.id}`} className="w-fit rounded-sm text-foreground-muted hover:text-brand-700">{job.customer.name}</Link>
-                  </div>
-                </article>
-              );
-            })}
+                  <span className="shrink-0 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(expense.amount)}</span>
+                </div>
+                <div className="mt-3 flex flex-col gap-1 text-sm">
+                  <Link href={`/isler/${expense.job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{expense.job.code} · {expense.job.title}</Link>
+                  <Link href={`/musteriler/${expense.job.customer.id}`} className="w-fit rounded-sm text-foreground-muted hover:text-brand-700">{expense.job.customer.name}</Link>
+                </div>
+              </article>
+            ))}
           </div>
 
           <div className="hidden overflow-x-auto md:block">
@@ -111,21 +124,16 @@ export default function ExpenseList({ expenses, jobs }: { expenses: Expense[]; j
                 </tr>
               </thead>
               <tbody className="divide-y divide-ui-border-subtle">
-                {filtered.map((expense) => {
-                  const job = jobMap.get(expense.jobId);
-                  if (!job) return null;
-
-                  return (
-                    <tr key={expense.id} className={TR_CLASS}>
-                      <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(expense.date)}</td>
-                      <td className={`${TD_CLASS} font-medium text-foreground`}>{expense.description}</td>
-                      <td className={TD_CLASS}>{expense.category}</td>
-                      <td className={TD_CLASS}><Link href={`/isler/${job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link></td>
-                      <td className={TD_CLASS}><Link href={`/musteriler/${job.customer.id}`} className="rounded-sm hover:text-brand-700">{job.customer.name}</Link></td>
-                      <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(expense.amount)}</td>
-                    </tr>
-                  );
-                })}
+                {filtered.map((expense) => (
+                  <tr key={expense.id} className={TR_CLASS}>
+                    <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(expense.date)}</td>
+                    <td className={`${TD_CLASS} font-medium text-foreground`}>{expense.description}</td>
+                    <td className={TD_CLASS}>{expense.categoryLabel}</td>
+                    <td className={TD_CLASS}><Link href={`/isler/${expense.job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{expense.job.code} · {expense.job.title}</Link></td>
+                    <td className={TD_CLASS}><Link href={`/musteriler/${expense.job.customer.id}`} className="rounded-sm hover:text-brand-700">{expense.job.customer.name}</Link></td>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(expense.amount)}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

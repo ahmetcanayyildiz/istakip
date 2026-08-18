@@ -7,6 +7,7 @@ import {
   BanknotesIcon,
   ChartBarIcon,
   ClockIcon,
+  PlusIcon,
   ReceiptIcon,
 } from "@/components/icons";
 import JobDetailSections from "@/components/job-detail-sections";
@@ -66,7 +67,16 @@ export default async function JobDetailPage({ params }: PageProps<"/isler/[id]">
             <p className="text-xs font-semibold tracking-wide text-brand-700 uppercase">{job.code}</p>
             <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground">{job.title}</h1>
           </div>
-          <StatusBadge status={job.statusLabel} />
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Link
+              href={`/giderler/yeni?job=${job.id}`}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
+            >
+              <PlusIcon className="h-4 w-4" />
+              Gider Ekle
+            </Link>
+            <StatusBadge status={job.statusLabel} />
+          </div>
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-5 border-t border-ui-border-subtle pt-5 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
