@@ -10,7 +10,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-ui-border bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
+    <aside className="hidden w-64 shrink-0 border-r border-ui-border bg-shell-sidebar lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
       <div className="flex h-16 items-center gap-2.5 border-b border-ui-border px-5">
         <LogoMark className="h-8 w-8" />
         <Link

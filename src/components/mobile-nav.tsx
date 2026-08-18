@@ -11,7 +11,7 @@ export default function MobileNav() {
   return (
     <nav
       aria-label="Ana menü"
-      className="overflow-x-auto border-b border-ui-border bg-surface lg:hidden"
+      className="overflow-x-auto border-b border-ui-border bg-shell-header lg:hidden"
     >
       <ul className="flex min-w-max items-center gap-1 px-4 py-2">
         {NAV_ITEMS.map((item) => {

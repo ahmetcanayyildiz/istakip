@@ -9,6 +9,8 @@ import type {
   CustomerRelatedRecord,
 } from "@/lib/customers/types";
 import { isUuid } from "@/lib/customers/validation";
+import { calculateQuoteTotals, centsToAmount } from "@/lib/quotes/calculations";
+import { QUOTE_STATUS_LABELS, type QuoteStatus } from "@/lib/quotes/types";
 import { createClient } from "@/lib/supabase/server";
 
 type CustomerRow = {
@@ -49,7 +51,7 @@ type QuoteRow = {
   id: string;
   code: string;
   title: string;
-  status: "draft" | "sent" | "pending" | "approved" | "rejected";
+  status: QuoteStatus;
   issue_date: string;
   discount_amount: number | string;
   vat_rate: number | string;
@@ -62,14 +64,6 @@ const JOB_STATUS_LABELS: Record<JobRow["status"], string> = {
   on_hold: "Beklemede",
   completed: "Tamamlandı",
   cancelled: "İptal Edildi",
-};
-
-const QUOTE_STATUS_LABELS: Record<QuoteRow["status"], string> = {
-  draft: "Taslak",
-  sent: "Gönderildi",
-  pending: "Beklemede",
-  approved: "Onaylandı",
-  rejected: "Reddedildi",
 };
 
 export class CustomerDataError extends Error {
@@ -190,19 +184,21 @@ export const getCustomerRelatedData = cache(async (customerId: string): Promise<
   });
 
   const quoteRecords: CustomerRelatedRecord[] = quotes.map((quote) => {
-    const subtotal = (quote.quote_items ?? []).reduce(
-      (sum, item) => sum + Number(item.quantity) * Number(item.unit_price),
-      0,
-    );
-    const discountedSubtotal = Math.max(0, subtotal - Number(quote.discount_amount));
-    const grandTotal = discountedSubtotal * (1 + Number(quote.vat_rate) / 100);
+    const totals = calculateQuoteTotals({
+      items: (quote.quote_items ?? []).map((item) => ({
+        quantity: item.quantity,
+        unitPrice: item.unit_price,
+      })),
+      discountAmount: quote.discount_amount,
+      vatRate: quote.vat_rate,
+    });
 
     return {
       id: quote.id,
       code: quote.code,
       title: quote.title,
       status: QUOTE_STATUS_LABELS[quote.status],
-      amount: grandTotal,
+      amount: centsToAmount(totals.grandTotalCents),
       date: quote.issue_date,
     };
   });

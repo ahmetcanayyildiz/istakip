@@ -31,7 +31,7 @@ export default function AppHeader({
   const initials = getInitials(fullName || companyName) || "İT";
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b border-ui-border bg-surface/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b border-ui-border bg-shell-header/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
       <div className="flex min-w-0 items-center gap-2.5">
         <LogoMark className="h-8 w-8 lg:hidden" />
         <nav aria-label="Sayfa konumu" className="min-w-0">
