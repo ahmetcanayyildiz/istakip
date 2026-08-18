@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArrowLeftIcon, MailIcon, PhoneIcon, UsersIcon } from "@/components/icons";
+import ConvertQuoteToJob from "@/components/jobs/convert-quote-to-job";
 import QuoteDataError from "@/components/quotes/quote-data-error";
 import StatusBadge from "@/components/status-badge";
 import { formatCurrency, formatDate } from "@/lib/format";
@@ -71,10 +72,15 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
           <ArrowLeftIcon className="h-4 w-4" />
           Teklifler
         </Link>
-        {quote.status === "approved" ? (
-          <span className="rounded-md border border-ui-border bg-surface-muted px-3 py-2 text-sm font-medium text-foreground-muted">
-            Onaylanmış teklifler düzenlenemez.
-          </span>
+        {quote.status === "approved" && quote.sourceJob ? (
+          <Link
+            href={`/isler/${quote.sourceJob.id}`}
+            className="inline-flex min-h-10 items-center justify-center rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-brand-700 shadow-xs transition-colors hover:bg-surface-hover hover:text-brand-800"
+          >
+            İş: {quote.sourceJob.code} · İşi Gör
+          </Link>
+        ) : quote.status === "approved" ? (
+          <ConvertQuoteToJob quoteId={quote.id} />
         ) : (
           <Link href={`/teklifler/${quote.id}/duzenle`} className="inline-flex min-h-10 items-center justify-center rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary shadow-xs transition-colors hover:bg-surface-hover hover:text-foreground">
             Teklifi Düzenle

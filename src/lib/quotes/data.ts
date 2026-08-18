@@ -10,6 +10,7 @@ import {
   type QuoteDetail,
   type QuoteItem,
   type QuoteListItem,
+  type QuoteSourceJob,
   type QuoteStatus,
 } from "@/lib/quotes/types";
 import { createClient } from "@/lib/supabase/server";
@@ -48,6 +49,7 @@ type QuoteRow = {
   updated_at?: string;
   customers: CustomerRelation | CustomerRelation[] | null;
   quote_items: QuoteItemRow[] | null;
+  jobs?: QuoteSourceJob | QuoteSourceJob[] | null;
 };
 
 type CustomerOptionRow = {
@@ -70,6 +72,11 @@ function logQueryError(context: string, error: { code?: string; status?: number 
 function getCustomer(relation: QuoteRow["customers"]): CustomerRelation | null {
   if (Array.isArray(relation)) return relation[0] ?? null;
   return relation;
+}
+
+function getSourceJob(relation: QuoteRow["jobs"]): QuoteSourceJob | null {
+  if (Array.isArray(relation)) return relation[0] ?? null;
+  return relation ?? null;
 }
 
 function mapBaseQuote(row: QuoteRow): QuoteListItem | null {
@@ -123,7 +130,7 @@ export const getQuoteById = cache(async (id: string): Promise<QuoteDetail | null
   const { data, error } = await supabase
     .from("quotes")
     .select(
-      "id, code, title, status, issue_date, valid_until, discount_amount, vat_rate, notes, created_at, updated_at, customers!quotes_customer_company_fkey(id, name, contact_name, phone, email, is_active), quote_items(id, position, description, quantity, unit, unit_price)",
+      "id, code, title, status, issue_date, valid_until, discount_amount, vat_rate, notes, created_at, updated_at, customers!quotes_customer_company_fkey(id, name, contact_name, phone, email, is_active), quote_items(id, position, description, quantity, unit, unit_price), jobs!jobs_source_quote_customer_company_fkey(id, code)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -166,6 +173,7 @@ export const getQuoteById = cache(async (id: string): Promise<QuoteDetail | null
     updatedAt: row.updated_at ?? "",
     discountAmount: String(row.discount_amount),
     items,
+    sourceJob: getSourceJob(row.jobs),
   };
 });
 

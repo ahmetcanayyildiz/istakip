@@ -8,32 +8,30 @@ import { ChevronRightIcon } from "@/components/icons";
 import { FilterEmptyState, SearchField, SelectFilter } from "@/components/list-filters";
 import StatusBadge from "@/components/status-badge";
 import { formatCurrency, formatDate, normalizeText } from "@/lib/format";
-import type { JobFinancials } from "@/lib/mock-finance";
-import type { Job, JobStatus } from "@/lib/mock-jobs";
+import {
+  JOB_STATUS_OPTIONS,
+  type JobListItem,
+  type JobStatus,
+} from "@/lib/jobs/types";
 import { TD_CLASS, TH_CLASS, TR_CLASS } from "@/lib/table-styles";
 
-export type JobListItem = Job & JobFinancials;
-type StatusFilter = "Tümü" | JobStatus;
+type StatusFilter = "all" | JobStatus;
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-  { value: "Tümü", label: "Tüm durumlar" },
-  { value: "Planlandı", label: "Planlandı" },
-  { value: "Devam Ediyor", label: "Devam Ediyor" },
-  { value: "Beklemede", label: "Beklemede" },
-  { value: "Tamamlandı", label: "Tamamlandı" },
-  { value: "İptal Edildi", label: "İptal Edildi" },
+  { value: "all", label: "Tüm durumlar" },
+  ...JOB_STATUS_OPTIONS,
 ];
 
 export default function JobList({ jobs }: { jobs: JobListItem[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("Tümü");
+  const [status, setStatus] = useState<StatusFilter>("all");
 
   const filtered = useMemo(() => {
     const term = normalizeText(query);
 
     return jobs.filter((job) => {
-      if (status !== "Tümü" && job.status !== status) {
+      if (status !== "all" && job.status !== status) {
         return false;
       }
 
@@ -43,12 +41,23 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
     });
   }, [jobs, query, status]);
 
-  const isFiltered = query.trim() !== "" || status !== "Tümü";
+  const isFiltered = query.trim() !== "" || status !== "all";
   const openJob = (id: string) => router.push(`/isler/${id}`);
   const resetFilters = () => {
     setQuery("");
-    setStatus("Tümü");
+    setStatus("all");
   };
+
+  if (jobs.length === 0) {
+    return (
+      <section className="rounded-lg border border-ui-border bg-surface px-6 py-16 text-center shadow-xs">
+        <h2 className="text-sm font-semibold text-foreground">Henüz iş kaydı yok</h2>
+        <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-foreground-muted">
+          Onaylanan bir teklif işe dönüştürüldüğünde burada listelenecek.
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">
@@ -111,30 +120,26 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
                   <ChevronRightIcon className="mt-1 h-4 w-4 shrink-0 text-foreground-faint" />
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                  <div><dt className="text-xs text-foreground-muted">Durum</dt><dd className="mt-1"><StatusBadge status={job.status} /></dd></div>
-                  <div><dt className="text-xs text-foreground-muted">İş Tutarı</dt><dd className="mt-1 font-medium text-foreground tabular-nums">{formatCurrency(job.amount)}</dd></div>
+                  <div><dt className="text-xs text-foreground-muted">Durum</dt><dd className="mt-1"><StatusBadge status={job.statusLabel} /></dd></div>
+                  <div><dt className="text-xs text-foreground-muted">İş Bedeli</dt><dd className="mt-1 font-medium text-foreground tabular-nums">{formatCurrency(job.contractAmount)}</dd></div>
                   <div><dt className="text-xs text-foreground-muted">Başlangıç</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatDate(job.startDate)}</dd></div>
                   <div><dt className="text-xs text-foreground-muted">Hedef</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatDate(job.targetDate)}</dd></div>
-                  <div><dt className="text-xs text-foreground-muted">Toplam Gider</dt><dd className="mt-0.5 text-foreground-secondary tabular-nums">{formatCurrency(job.totalExpenses)}</dd></div>
-                  <div><dt className="text-xs text-foreground-muted">Tahmini Kâr</dt><dd className="mt-0.5 font-medium text-foreground tabular-nums">{formatCurrency(job.estimatedProfit)}</dd></div>
                 </dl>
               </div>
             ))}
           </div>
 
           <div className="hidden overflow-x-auto lg:block">
-            <table className="w-full min-w-[78rem] border-collapse text-left">
+            <table className="w-full min-w-[66rem] border-collapse text-left">
               <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
                   <th scope="col" className={TH_CLASS}>İş No</th>
-                  <th scope="col" className={TH_CLASS}>İş Adı</th>
+                  <th scope="col" className={TH_CLASS}>İş Başlığı</th>
                   <th scope="col" className={TH_CLASS}>Müşteri</th>
                   <th scope="col" className={TH_CLASS}>Başlangıç</th>
-                  <th scope="col" className={TH_CLASS}>Bitiş / Hedef</th>
+                  <th scope="col" className={TH_CLASS}>Hedef Tarihi</th>
                   <th scope="col" className={TH_CLASS}>Durum</th>
-                  <th scope="col" className={`${TH_CLASS} text-right`}>İş Tutarı</th>
-                  <th scope="col" className={`${TH_CLASS} text-right`}>Toplam Gider</th>
-                  <th scope="col" className={`${TH_CLASS} text-right`}>Tahmini Kâr</th>
+                  <th scope="col" className={`${TH_CLASS} text-right`}>İş Bedeli</th>
                   <th scope="col" className="w-10"><span className="sr-only">Detay</span></th>
                 </tr>
               </thead>
@@ -161,10 +166,8 @@ export default function JobList({ jobs }: { jobs: JobListItem[] }) {
                     </td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(job.startDate)}</td>
                     <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(job.targetDate)}</td>
-                    <td className={TD_CLASS}><StatusBadge status={job.status} /></td>
-                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(job.amount)}</td>
-                    <td className={`${TD_CLASS} text-right whitespace-nowrap tabular-nums`}>{formatCurrency(job.totalExpenses)}</td>
-                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(job.estimatedProfit)}</td>
+                    <td className={TD_CLASS}><StatusBadge status={job.statusLabel} /></td>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(job.contractAmount)}</td>
                     <td className={`${TD_CLASS} text-right`}><ChevronRightIcon className="ml-auto h-4 w-4 text-foreground-faint" /></td>
                   </tr>
                 ))}

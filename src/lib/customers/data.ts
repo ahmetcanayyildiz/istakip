@@ -9,6 +9,7 @@ import type {
   CustomerRelatedRecord,
 } from "@/lib/customers/types";
 import { isUuid } from "@/lib/customers/validation";
+import { JOB_STATUS_LABELS, type JobStatus } from "@/lib/jobs/types";
 import { calculateQuoteTotals, centsToAmount } from "@/lib/quotes/calculations";
 import { QUOTE_STATUS_LABELS, type QuoteStatus } from "@/lib/quotes/types";
 import { createClient } from "@/lib/supabase/server";
@@ -36,7 +37,7 @@ type JobRow = {
   id: string;
   code: string;
   title: string;
-  status: "planned" | "in_progress" | "on_hold" | "completed" | "cancelled";
+  status: JobStatus;
   start_date: string;
   contract_amount: number | string;
   collections: CollectionRow[] | null;
@@ -56,14 +57,6 @@ type QuoteRow = {
   discount_amount: number | string;
   vat_rate: number | string;
   quote_items: QuoteItemRow[] | null;
-};
-
-const JOB_STATUS_LABELS: Record<JobRow["status"], string> = {
-  planned: "Planlandı",
-  in_progress: "Devam Ediyor",
-  on_hold: "Beklemede",
-  completed: "Tamamlandı",
-  cancelled: "İptal Edildi",
 };
 
 export class CustomerDataError extends Error {
@@ -162,7 +155,7 @@ export const getCustomerRelatedData = cache(async (customerId: string): Promise<
 
   const jobs = (jobsResult.data ?? []) as unknown as JobRow[];
   const quotes = (quotesResult.data ?? []) as unknown as QuoteRow[];
-  const activeStatuses = new Set<JobRow["status"]>(["planned", "in_progress", "on_hold"]);
+  const activeStatuses = new Set<JobStatus>(["planned", "in_progress", "on_hold"]);
   let totalRevenue = 0;
   let collectedAmount = 0;
 

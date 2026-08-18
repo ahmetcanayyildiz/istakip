@@ -65,6 +65,11 @@ export type QuoteListItem = QuoteTotals & {
   vatRate: string;
 };
 
+export type QuoteSourceJob = {
+  id: string;
+  code: string;
+};
+
 export type QuoteDetail = QuoteListItem & {
   customer: QuoteCustomer;
   notes: string | null;
@@ -72,6 +77,7 @@ export type QuoteDetail = QuoteListItem & {
   updatedAt: string;
   discountAmount: string;
   items: QuoteItem[];
+  sourceJob: QuoteSourceJob | null;
 };
 
 export type QuoteFormInitialValues = {
