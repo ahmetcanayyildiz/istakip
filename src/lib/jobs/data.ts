@@ -2,11 +2,21 @@ import "server-only";
 
 import { cache } from "react";
 
+import {
+  COLLECTION_STATUS_LABELS,
+  PAYMENT_METHOD_LABELS,
+  type PaymentMethod,
+} from "@/lib/collections/types";
 import { isUuid } from "@/lib/customers/validation";
 import {
   EXPENSE_CATEGORY_LABELS,
   type ExpenseCategory,
 } from "@/lib/expenses/types";
+import {
+  calculateOpenBalance,
+  deriveCollectionStatus,
+  getIstanbulToday,
+} from "@/lib/finance/calculations";
 import {
   JOB_STATUS_LABELS,
   type JobCollectionRecord,
@@ -53,7 +63,7 @@ type CollectionRow = {
   amount: Numeric;
   due_date: string;
   status: "pending" | "paid";
-  payment_method: "bank_transfer" | "cash" | "credit_card" | "other" | null;
+  payment_method: PaymentMethod | null;
   paid_at: string | null;
 };
 
@@ -70,20 +80,6 @@ type JobRow = {
   expenses?: ExpenseRow[] | null;
   collections?: CollectionRow[] | null;
 };
-
-const PAYMENT_METHOD_LABELS: Record<NonNullable<CollectionRow["payment_method"]>, string> = {
-  bank_transfer: "Havale / EFT",
-  cash: "Nakit",
-  credit_card: "Kredi Kartı",
-  other: "Diğer",
-};
-
-const istanbulDateFormatter = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Europe/Istanbul",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
 
 export class JobDataError extends Error {
   constructor() {
@@ -143,15 +139,10 @@ function mapExpenses(rows: ExpenseRow[]): JobExpenseRecord[] {
 }
 
 function mapCollections(rows: CollectionRow[]): JobCollectionRecord[] {
-  const today = istanbulDateFormatter.format(new Date());
+  const today = getIstanbulToday();
 
   return rows.map((collection) => {
-    const isOverdue = collection.status === "pending" && collection.due_date < today;
-    const statusLabel = collection.status === "paid"
-      ? "Tahsil Edildi"
-      : isOverdue
-        ? "Gecikmiş"
-        : "Vadesi Beklenen";
+    const displayStatus = deriveCollectionStatus(collection.status, collection.due_date, today);
 
     return {
       id: collection.id,
@@ -163,7 +154,7 @@ function mapCollections(rows: CollectionRow[]): JobCollectionRecord[] {
         ? PAYMENT_METHOD_LABELS[collection.payment_method]
         : "—",
       status: collection.status,
-      statusLabel,
+      statusLabel: COLLECTION_STATUS_LABELS[displayStatus],
     };
   });
 }
@@ -237,7 +228,7 @@ export const getJobById = cache(async (id: string): Promise<JobDetail | null> =>
     financials: {
       totalExpenses,
       collected,
-      openBalance: base.contractAmount - collected,
+      openBalance: calculateOpenBalance(base.contractAmount, collected),
       estimatedProfit: base.contractAmount - totalExpenses,
     },
   };

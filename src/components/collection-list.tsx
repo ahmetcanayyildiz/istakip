@@ -3,47 +3,55 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import MarkCollectionPaid from "@/components/collections/mark-collection-paid";
 import { FilterEmptyState, SearchField, SelectFilter } from "@/components/list-filters";
 import StatusBadge from "@/components/status-badge";
+import {
+  PAYMENT_METHOD_OPTIONS,
+  type CollectionListItem,
+  type PaymentMethod,
+} from "@/lib/collections/types";
+import type { CollectionDisplayStatus } from "@/lib/finance/calculations";
 import { formatCurrency, formatDate, normalizeText } from "@/lib/format";
-import type { CollectionRecord, CollectionStatus, PaymentMethod } from "@/lib/mock-collections";
-import { PAYMENT_METHODS } from "@/lib/mock-collections";
-import type { Job } from "@/lib/mock-jobs";
 import { TD_CLASS, TH_CLASS, TR_CLASS } from "@/lib/table-styles";
 
-type StatusFilter = "Tümü" | CollectionStatus;
-type MethodFilter = "Tümü" | PaymentMethod;
+type StatusFilter = "all" | CollectionDisplayStatus;
+type MethodFilter = "all" | "unassigned" | PaymentMethod;
 
-const collectionStatusLabel = (status: CollectionStatus) =>
-  status === "Bekliyor" ? "Vadesi Beklenen" : status;
-
-export default function CollectionList({ collections, jobs }: { collections: CollectionRecord[]; jobs: Job[] }) {
+export default function CollectionList({
+  collections,
+  today,
+}: {
+  collections: CollectionListItem[];
+  today: string;
+}) {
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("Tümü");
-  const [method, setMethod] = useState<MethodFilter>("Tümü");
-  const jobMap = useMemo(() => new Map(jobs.map((job) => [job.id, job])), [jobs]);
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [method, setMethod] = useState<MethodFilter>("all");
 
   const filtered = useMemo(() => {
     const term = normalizeText(query);
 
     return collections.filter((collection) => {
-      const job = jobMap.get(collection.jobId);
-
-      if (status !== "Tümü" && collection.status !== status) return false;
-      if (method !== "Tümü" && collection.method !== method) return false;
+      if (status !== "all" && collection.displayStatus !== status) return false;
+      if (method === "unassigned" && collection.paymentMethod !== null) return false;
+      if (method !== "all" && method !== "unassigned" && collection.paymentMethod !== method) return false;
       if (!term) return true;
 
-      return [job?.customer.name ?? "", job?.title ?? "", job?.code ?? "", collection.method].some(
-        (value) => normalizeText(value).includes(term),
-      );
+      return [
+        collection.job.customer.name,
+        collection.job.title,
+        collection.job.code,
+        collection.paymentMethodLabel ?? "",
+      ].some((value) => normalizeText(value).includes(term));
     });
-  }, [collections, jobMap, method, query, status]);
+  }, [collections, method, query, status]);
 
-  const isFiltered = query.trim() !== "" || status !== "Tümü" || method !== "Tümü";
+  const isFiltered = query.trim() !== "" || status !== "all" || method !== "all";
   const resetFilters = () => {
     setQuery("");
-    setStatus("Tümü");
-    setMethod("Tümü");
+    setStatus("all");
+    setMethod("all");
   };
 
   return (
@@ -56,10 +64,10 @@ export default function CollectionList({ collections, jobs }: { collections: Col
             label="Tahsilat durumu"
             value={status}
             options={[
-              { value: "Tümü", label: "Tüm durumlar" },
-              { value: "Tahsil Edildi", label: "Tahsil Edildi" },
-              { value: "Bekliyor", label: "Vadesi Beklenen" },
-              { value: "Gecikmiş", label: "Gecikmiş" },
+              { value: "all", label: "Tüm durumlar" },
+              { value: "paid", label: "Tahsil Edildi" },
+              { value: "pending", label: "Vadesi Beklenen" },
+              { value: "overdue", label: "Gecikmiş" },
             ]}
             onChange={(value) => setStatus(value as StatusFilter)}
           />
@@ -67,7 +75,11 @@ export default function CollectionList({ collections, jobs }: { collections: Col
             id="tahsilat-yontem"
             label="Ödeme yöntemi"
             value={method}
-            options={[{ value: "Tümü", label: "Tüm yöntemler" }, ...PAYMENT_METHODS.map((item) => ({ value: item, label: item }))]}
+            options={[
+              { value: "all", label: "Tüm yöntemler" },
+              ...PAYMENT_METHOD_OPTIONS.map((item) => ({ value: item.value, label: item.label })),
+              { value: "unassigned", label: "Belirtilmedi" },
+            ]}
             onChange={(value) => setMethod(value as MethodFilter)}
           />
         </div>
@@ -75,61 +87,73 @@ export default function CollectionList({ collections, jobs }: { collections: Col
 
       <p aria-live="polite" className="sr-only">{filtered.length} tahsilat listeleniyor.</p>
 
-      {filtered.length === 0 ? (
+      {collections.length === 0 ? (
+        <div className="px-5 py-12 text-center">
+          <h2 className="text-sm font-semibold text-foreground">Henüz tahsilat kaydı yok</h2>
+          <p className="mx-auto mt-1 max-w-md text-sm text-foreground-muted">
+            İşlere ait ödeme planlarını ekleyerek tahsilat takibine başlayın.
+          </p>
+          <Link href="/tahsilatlar/yeni" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
+            İlk Tahsilatı Ekle
+          </Link>
+        </div>
+      ) : filtered.length === 0 ? (
         <FilterEmptyState title="Tahsilat bulunamadı" description="Arama ve filtrelere uyan tahsilat kaydı yok. Filtreleri temizleyip yeniden deneyin." onReset={resetFilters} />
       ) : (
         <>
           <div className="divide-y divide-ui-border-subtle md:hidden">
-            {filtered.map((collection) => {
-              const job = jobMap.get(collection.jobId);
-              if (!job) return null;
-
-              return (
-                <article key={collection.id} className="px-4 py-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <Link href={`/musteriler/${job.customer.id}`} className="rounded-sm text-sm font-semibold text-foreground hover:text-brand-700">{job.customer.name}</Link>
-                      <p className="mt-0.5 text-xs text-foreground-muted tabular-nums">{formatDate(collection.date)} · {collection.method}</p>
-                    </div>
-                    <span className="shrink-0 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(collection.amount)}</span>
+            {filtered.map((collection) => (
+              <article key={collection.id} className="px-4 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link href={`/musteriler/${collection.job.customer.id}`} className="rounded-sm text-sm font-semibold text-foreground hover:text-brand-700">{collection.job.customer.name}</Link>
+                    <p className="mt-0.5 text-xs text-foreground-muted tabular-nums">
+                      Vade {formatDate(collection.dueDate)} · {collection.paymentMethodLabel ?? "Yöntem belirtilmedi"}
+                    </p>
                   </div>
-                  <div className="mt-3 flex items-end justify-between gap-3">
-                    <Link href={`/isler/${job.id}`} className="min-w-0 rounded-sm text-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link>
-                    <StatusBadge status={collectionStatusLabel(collection.status)} />
-                  </div>
-                </article>
-              );
-            })}
+                  <span className="shrink-0 text-sm font-semibold text-foreground tabular-nums">{formatCurrency(collection.amount)}</span>
+                </div>
+                <div className="mt-3 flex items-end justify-between gap-3">
+                  <Link href={`/isler/${collection.job.id}`} className="min-w-0 rounded-sm text-sm font-medium text-brand-700 hover:text-brand-800">{collection.job.code} · {collection.job.title}</Link>
+                  <StatusBadge status={collection.statusLabel} />
+                </div>
+                {collection.paidDate ? <p className="mt-2 text-xs text-foreground-muted tabular-nums">Ödeme {formatDate(collection.paidDate)}</p> : null}
+                {collection.status === "pending" ? (
+                  <div className="mt-3"><MarkCollectionPaid collectionId={collection.id} defaultPaidDate={today} /></div>
+                ) : null}
+              </article>
+            ))}
           </div>
 
           <div className="hidden overflow-x-auto md:block">
-            <table className="w-full min-w-[66rem] border-collapse text-left">
+            <table className="w-full min-w-[78rem] border-collapse text-left">
               <thead className="border-b border-ui-border bg-surface-muted">
                 <tr>
-                  <th scope="col" className={TH_CLASS}>Tarih</th>
+                  <th scope="col" className={TH_CLASS}>İş</th>
                   <th scope="col" className={TH_CLASS}>Müşteri</th>
-                  <th scope="col" className={TH_CLASS}>İlgili İş</th>
                   <th scope="col" className={`${TH_CLASS} text-right`}>Tutar</th>
+                  <th scope="col" className={TH_CLASS}>Vade Tarihi</th>
+                  <th scope="col" className={TH_CLASS}>Ödeme Tarihi</th>
                   <th scope="col" className={TH_CLASS}>Ödeme Yöntemi</th>
                   <th scope="col" className={TH_CLASS}>Durum</th>
+                  <th scope="col" className={`${TH_CLASS} text-right`}>İşlem</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ui-border-subtle">
-                {filtered.map((collection) => {
-                  const job = jobMap.get(collection.jobId);
-                  if (!job) return null;
-
-                  return (
-                    <tr key={collection.id} className={TR_CLASS}>
-                      <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(collection.date)}</td>
-                      <td className={TD_CLASS}><Link href={`/musteriler/${job.customer.id}`} className="rounded-sm font-medium text-foreground hover:text-brand-700">{job.customer.name}</Link></td>
-                      <td className={TD_CLASS}><Link href={`/isler/${job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{job.code} · {job.title}</Link></td>
-                      <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(collection.amount)}</td>
-                      <td className={TD_CLASS}>{collection.method}</td>
-                      <td className={TD_CLASS}><StatusBadge status={collectionStatusLabel(collection.status)} /></td>
-                    </tr>
-                  );
-                })}
+                {filtered.map((collection) => (
+                  <tr key={collection.id} className={TR_CLASS}>
+                    <td className={TD_CLASS}><Link href={`/isler/${collection.job.id}`} className="rounded-sm font-medium text-brand-700 hover:text-brand-800">{collection.job.code} · {collection.job.title}</Link></td>
+                    <td className={TD_CLASS}><Link href={`/musteriler/${collection.job.customer.id}`} className="rounded-sm font-medium text-foreground hover:text-brand-700">{collection.job.customer.name}</Link></td>
+                    <td className={`${TD_CLASS} text-right font-medium whitespace-nowrap text-foreground tabular-nums`}>{formatCurrency(collection.amount)}</td>
+                    <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{formatDate(collection.dueDate)}</td>
+                    <td className={`${TD_CLASS} whitespace-nowrap tabular-nums`}>{collection.paidDate ? formatDate(collection.paidDate) : "—"}</td>
+                    <td className={TD_CLASS}>{collection.paymentMethodLabel ?? "—"}</td>
+                    <td className={TD_CLASS}><StatusBadge status={collection.statusLabel} /></td>
+                    <td className={`${TD_CLASS} text-right`}>
+                      {collection.status === "pending" ? <MarkCollectionPaid collectionId={collection.id} defaultPaidDate={today} /> : <span className="text-foreground-subtle">—</span>}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

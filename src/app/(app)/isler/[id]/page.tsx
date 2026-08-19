@@ -75,6 +75,13 @@ export default async function JobDetailPage({ params }: PageProps<"/isler/[id]">
               <PlusIcon className="h-4 w-4" />
               Gider Ekle
             </Link>
+            <Link
+              href={`/tahsilatlar/yeni?job=${job.id}`}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
+            >
+              <PlusIcon className="h-4 w-4" />
+              Tahsilat Ekle
+            </Link>
             <StatusBadge status={job.statusLabel} />
           </div>
         </div>

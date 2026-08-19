@@ -70,13 +70,22 @@ Müşteri → Teklif → İş → Gider → Tahsilat → Dashboard
 | Arayüz | Tailwind CSS |
 | Kod kalitesi | ESLint |
 | Versiyon kontrol | Git / GitHub |
-| Veritabanı (sonraki aşama) | Supabase + PostgreSQL |
+| Veritabanı | Supabase + PostgreSQL |
 
 Notlar:
 
 - `src/` dizin yapısı kullanılır.
 - Import alias: `@/*`
-- Supabase, veritabanı aşamasına gelindiğinde eklenecektir; şu an kurulu değildir.
+- Supabase Auth, tenant RLS ve güvenli finans RPC'leri aktiftir.
+
+## Modül Durumu
+
+- Customers — gerçek Supabase
+- Quotes — gerçek Supabase
+- Jobs — gerçek Supabase
+- Expenses — gerçek Supabase
+- Collections — gerçek Supabase
+- Dashboard — gerçek Supabase verilerinden türetilen metrikler
 
 ## Geliştirme Sırası
 

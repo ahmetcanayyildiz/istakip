@@ -29,9 +29,12 @@ const ACCENT_STYLES: Record<NonNullable<StatCardProps["accent"]>, string> = {
 const ACCENT_BY_LABEL: Partial<
   Record<string, NonNullable<StatCardProps["accent"]>>
 > = {
-  "Toplam Ciro": "indigo",
+  "Toplam İş Bedeli": "indigo",
   "Toplam Gider": "rose",
   "Tahmini Kâr": "emerald",
+  "Tahsil Edilen": "emerald",
+  "Vadesi Beklenen": "amber",
+  Gecikmiş: "rose",
   "Toplam Açık Bakiye": "amber",
   "Aktif İşler": "cyan",
   "Bekleyen Teklifler": "slate",

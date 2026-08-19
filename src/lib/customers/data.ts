@@ -9,6 +9,7 @@ import type {
   CustomerRelatedRecord,
 } from "@/lib/customers/types";
 import { isUuid } from "@/lib/customers/validation";
+import { calculateOpenBalance } from "@/lib/finance/calculations";
 import { JOB_STATUS_LABELS, type JobStatus } from "@/lib/jobs/types";
 import { calculateQuoteTotals, centsToAmount } from "@/lib/quotes/calculations";
 import { QUOTE_STATUS_LABELS, type QuoteStatus } from "@/lib/quotes/types";
@@ -201,7 +202,7 @@ export const getCustomerRelatedData = cache(async (customerId: string): Promise<
       totalJobs: jobs.length,
       activeJobs: jobs.filter((job) => activeStatuses.has(job.status)).length,
       totalRevenue,
-      openBalance: Math.max(0, totalRevenue - collectedAmount),
+      openBalance: calculateOpenBalance(totalRevenue, collectedAmount),
     },
     jobs: jobRecords.slice(0, 5),
     quotes: quoteRecords.slice(0, 5),
