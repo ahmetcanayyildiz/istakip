@@ -4,6 +4,7 @@ import Link from "next/link";
 import QuoteList from "@/components/quote-list";
 import { PlusIcon } from "@/components/icons";
 import QuoteDataError from "@/components/quotes/quote-data-error";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { getQuotes } from "@/lib/quotes/data";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TekliflerPage() {
+  const accountPromise = getCurrentAccount();
   let quotes;
 
   try {
@@ -28,6 +30,9 @@ export default async function TekliflerPage() {
     );
   }
 
+  const account = await accountPromise;
+  const isDemo = account.status === "ready" && account.isDemo;
+
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -40,16 +45,18 @@ export default async function TekliflerPage() {
           </p>
         </div>
 
-        <Link
-          href="/teklifler/yeni"
-          className="inline-flex min-h-10 items-center justify-center gap-1.5 self-start rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Yeni Teklif
-        </Link>
+        {!isDemo ? (
+          <Link
+            href="/teklifler/yeni"
+            className="inline-flex min-h-10 items-center justify-center gap-1.5 self-start rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Yeni Teklif
+          </Link>
+        ) : null}
       </div>
 
-      <QuoteList quotes={quotes} />
+      <QuoteList quotes={quotes} isDemo={isDemo} />
     </div>
   );
 }

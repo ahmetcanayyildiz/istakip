@@ -21,9 +21,11 @@ type MethodFilter = "all" | "unassigned" | PaymentMethod;
 export default function CollectionList({
   collections,
   today,
+  isDemo,
 }: {
   collections: CollectionListItem[];
   today: string;
+  isDemo: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -93,9 +95,11 @@ export default function CollectionList({
           <p className="mx-auto mt-1 max-w-md text-sm text-foreground-muted">
             İşlere ait ödeme planlarını ekleyerek tahsilat takibine başlayın.
           </p>
-          <Link href="/tahsilatlar/yeni" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
-            İlk Tahsilatı Ekle
-          </Link>
+          {!isDemo ? (
+            <Link href="/tahsilatlar/yeni" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
+              İlk Tahsilatı Ekle
+            </Link>
+          ) : null}
         </div>
       ) : filtered.length === 0 ? (
         <FilterEmptyState title="Tahsilat bulunamadı" description="Arama ve filtrelere uyan tahsilat kaydı yok. Filtreleri temizleyip yeniden deneyin." onReset={resetFilters} />
@@ -118,7 +122,7 @@ export default function CollectionList({
                   <StatusBadge status={collection.statusLabel} />
                 </div>
                 {collection.paidDate ? <p className="mt-2 text-xs text-foreground-muted tabular-nums">Ödeme {formatDate(collection.paidDate)}</p> : null}
-                {collection.status === "pending" ? (
+                {collection.status === "pending" && !isDemo ? (
                   <div className="mt-3"><MarkCollectionPaid collectionId={collection.id} defaultPaidDate={today} /></div>
                 ) : null}
               </article>
@@ -150,7 +154,7 @@ export default function CollectionList({
                     <td className={TD_CLASS}>{collection.paymentMethodLabel ?? "—"}</td>
                     <td className={TD_CLASS}><StatusBadge status={collection.statusLabel} /></td>
                     <td className={`${TD_CLASS} text-right`}>
-                      {collection.status === "pending" ? <MarkCollectionPaid collectionId={collection.id} defaultPaidDate={today} /> : <span className="text-foreground-subtle">—</span>}
+                      {collection.status === "pending" && !isDemo ? <MarkCollectionPaid collectionId={collection.id} defaultPaidDate={today} /> : <span className="text-foreground-subtle">—</span>}
                     </td>
                   </tr>
                 ))}

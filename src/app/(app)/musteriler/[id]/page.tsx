@@ -19,6 +19,7 @@ import {
 import SectionPanel from "@/components/section-panel";
 import StatCard from "@/components/stat-card";
 import StatusBadge from "@/components/status-badge";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { getCustomerById, getCustomerRelatedData } from "@/lib/customers/data";
 import type { CustomerRelatedRecord } from "@/lib/customers/types";
 import { formatCurrency, formatDate } from "@/lib/format";
@@ -80,7 +81,8 @@ function RecordTable({
 }
 
 export default async function CustomerDetailPage({ params }: PageProps<"/musteriler/[id]">) {
-  const { id } = await params;
+  const [account, { id }] = await Promise.all([getCurrentAccount(), params]);
+  const isDemo = account.status === "ready" && account.isDemo;
   let customer;
 
   try {
@@ -130,9 +132,11 @@ export default async function CustomerDetailPage({ params }: PageProps<"/musteri
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={customer.status} />
-            <Link href={`/musteriler/${customer.id}/duzenle`} className="inline-flex min-h-10 items-center justify-center rounded-md border border-ui-border bg-surface px-3 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-ui-border-strong hover:bg-surface-hover hover:text-foreground">
-              Düzenle
-            </Link>
+            {!isDemo ? (
+              <Link href={`/musteriler/${customer.id}/duzenle`} className="inline-flex min-h-10 items-center justify-center rounded-md border border-ui-border bg-surface px-3 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-ui-border-strong hover:bg-surface-hover hover:text-foreground">
+                Düzenle
+              </Link>
+            ) : null}
           </div>
         </div>
 
@@ -179,13 +183,15 @@ export default async function CustomerDetailPage({ params }: PageProps<"/musteri
         <CustomerDataError message="Müşterinin iş, teklif ve finansal özeti şu anda yüklenemiyor." />
       )}
 
-      <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
-        <h2 className="text-base font-semibold tracking-tight text-foreground">Müşteri kaydını sil</h2>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-foreground-muted">
-          Bağlı teklif veya iş bulunmayan müşteri kayıtlarını kalıcı olarak silebilirsiniz.
-        </p>
-        <div className="mt-4"><DeleteCustomer customerId={customer.id} /></div>
-      </section>
+      {!isDemo ? (
+        <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">Müşteri kaydını sil</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-foreground-muted">
+            Bağlı teklif veya iş bulunmayan müşteri kayıtlarını kalıcı olarak silebilirsiniz.
+          </p>
+          <div className="mt-4"><DeleteCustomer customerId={customer.id} /></div>
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import ExpenseList from "@/components/expense-list";
 import ExpenseDataError from "@/components/expenses/expense-data-error";
 import { DocumentIcon, PlusIcon, ReceiptIcon } from "@/components/icons";
 import StatCard from "@/components/stat-card";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { getExpenses } from "@/lib/expenses/data";
 import { formatCurrency } from "@/lib/format";
 
@@ -34,6 +35,7 @@ function getCurrentMonth() {
 }
 
 export default async function GiderlerPage() {
+  const accountPromise = getCurrentAccount();
   let expenses;
   try {
     expenses = await getExpenses();
@@ -49,6 +51,8 @@ export default async function GiderlerPage() {
     );
   }
 
+  const account = await accountPromise;
+  const isDemo = account.status === "ready" && account.isDemo;
   const currentMonth = getCurrentMonth();
   const totalExpense = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const monthlyExpense = expenses.reduce(
@@ -63,10 +67,12 @@ export default async function GiderlerPage() {
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Giderler</h1>
           <p className="mt-1 text-sm text-foreground-muted">İşlere ait gerçek giderleri ve finansal etkilerini tek listede takip edin.</p>
         </div>
-        <Link href="/giderler/yeni" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
-          <PlusIcon className="h-4 w-4" />
-          Yeni Gider
-        </Link>
+        {!isDemo ? (
+          <Link href="/giderler/yeni" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
+            <PlusIcon className="h-4 w-4" />
+            Yeni Gider
+          </Link>
+        ) : null}
       </div>
 
       <section>

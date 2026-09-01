@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import AuthMessage from "@/components/auth/auth-message";
 import AuthShell from "@/components/auth/auth-shell";
+import DemoLoginButton from "@/components/auth/demo-login-button";
 import LoginForm from "@/components/auth/login-form";
 import { getCurrentAccount } from "@/lib/auth/account";
 
@@ -47,6 +48,7 @@ export default async function LoginPage({
           </AuthMessage>
         ) : null}
         <LoginForm disabled={configurationError || serviceError} />
+        <DemoLoginButton disabled={configurationError || serviceError} />
       </div>
     </AuthShell>
   );

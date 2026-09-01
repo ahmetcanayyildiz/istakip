@@ -6,6 +6,7 @@ import CollectionForm from "@/components/collections/collection-form";
 import { ArrowLeftIcon } from "@/components/icons";
 import { getCollectionJobOptions } from "@/lib/collections/data";
 import { getIstanbulToday } from "@/lib/finance/calculations";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 
 export const metadata: Metadata = {
   title: "Yeni Tahsilat | İşTakip",
@@ -17,6 +18,7 @@ export default async function NewCollectionPage({
 }: {
   searchParams: Promise<{ job?: string }>;
 }) {
+  await redirectDemoMutationRoute("/tahsilatlar");
   const params = await searchParams;
   let jobs;
 

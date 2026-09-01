@@ -5,6 +5,7 @@ import CollectionList from "@/components/collection-list";
 import CollectionDataError from "@/components/collections/collection-data-error";
 import { BanknotesIcon, ClockIcon, PlusIcon, ReceiptIcon } from "@/components/icons";
 import StatCard from "@/components/stat-card";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { getCollections } from "@/lib/collections/data";
 import {
   calculateCollectionSummary,
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TahsilatlarPage() {
+  const accountPromise = getCurrentAccount();
   let collections;
   let jobs;
   try {
@@ -36,6 +38,8 @@ export default async function TahsilatlarPage() {
     );
   }
 
+  const account = await accountPromise;
+  const isDemo = account.status === "ready" && account.isDemo;
   const today = getIstanbulToday();
   const summary = calculateCollectionSummary(collections, today);
   let totalJobAmount = 0;
@@ -51,10 +55,12 @@ export default async function TahsilatlarPage() {
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Tahsilatlar</h1>
           <p className="mt-1 text-sm text-foreground-muted">Tahsil edilen, vadesi beklenen ve gecikmiş gerçek ödemeleri takip edin.</p>
         </div>
-        <Link href="/tahsilatlar/yeni" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
-          <PlusIcon className="h-4 w-4" />
-          Yeni Tahsilat
-        </Link>
+        {!isDemo ? (
+          <Link href="/tahsilatlar/yeni" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-brand-action px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover">
+            <PlusIcon className="h-4 w-4" />
+            Yeni Tahsilat
+          </Link>
+        ) : null}
       </div>
 
       <section>
@@ -67,7 +73,7 @@ export default async function TahsilatlarPage() {
         </div>
       </section>
 
-      <CollectionList collections={collections} today={today} />
+      <CollectionList collections={collections} today={today} isDemo={isDemo} />
     </div>
   );
 }

@@ -14,6 +14,7 @@ import JobDetailSections from "@/components/job-detail-sections";
 import JobDataError from "@/components/jobs/job-data-error";
 import StatCard from "@/components/stat-card";
 import StatusBadge from "@/components/status-badge";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { getJobById } from "@/lib/jobs/data";
 
@@ -31,7 +32,8 @@ export async function generateMetadata({ params }: PageProps<"/isler/[id]">): Pr
   }
 }
 export default async function JobDetailPage({ params }: PageProps<"/isler/[id]">) {
-  const { id } = await params;
+  const [account, { id }] = await Promise.all([getCurrentAccount(), params]);
+  const isDemo = account.status === "ready" && account.isDemo;
   let job;
 
   try {
@@ -68,20 +70,24 @@ export default async function JobDetailPage({ params }: PageProps<"/isler/[id]">
             <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground">{job.title}</h1>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <Link
-              href={`/giderler/yeni?job=${job.id}`}
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
-            >
-              <PlusIcon className="h-4 w-4" />
-              Gider Ekle
-            </Link>
-            <Link
-              href={`/tahsilatlar/yeni?job=${job.id}`}
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
-            >
-              <PlusIcon className="h-4 w-4" />
-              Tahsilat Ekle
-            </Link>
+            {!isDemo ? (
+              <>
+                <Link
+                  href={`/giderler/yeni?job=${job.id}`}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  Gider Ekle
+                </Link>
+                <Link
+                  href={`/tahsilatlar/yeni?job=${job.id}`}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface-hover hover:text-foreground"
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  Tahsilat Ekle
+                </Link>
+              </>
+            ) : null}
             <StatusBadge status={job.statusLabel} />
           </div>
         </div>

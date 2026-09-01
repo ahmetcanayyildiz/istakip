@@ -7,6 +7,7 @@ import CustomerForm from "@/components/customers/customer-form";
 import { ArrowLeftIcon } from "@/components/icons";
 import { updateCustomerAction } from "@/lib/customers/actions";
 import { getCustomerById } from "@/lib/customers/data";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 
 export const metadata: Metadata = {
   title: "Müşteri Düzenle | İşTakip",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 
 export default async function EditCustomerPage({ params }: PageProps<"/musteriler/[id]/duzenle">) {
   const { id } = await params;
+  await redirectDemoMutationRoute(`/musteriler/${id}`);
   let customer;
 
   try {

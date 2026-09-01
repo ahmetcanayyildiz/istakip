@@ -16,7 +16,7 @@ const STATUS_FILTERS: StatusFilter[] = ["Tümü", "Aktif", "Pasif"];
 const displayValue = (value: string | null) => value || "—";
 const customerDate = (value: string) => formatDate(value.slice(0, 10));
 
-function CustomerEmptyState() {
+function CustomerEmptyState({ isDemo }: { isDemo: boolean }) {
   return (
     <section className="rounded-lg border border-ui-border bg-surface px-6 py-16 text-center shadow-xs">
       <span
@@ -29,18 +29,26 @@ function CustomerEmptyState() {
       <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-foreground-muted">
         İlk müşteri kaydınızı oluşturarak teklif ve iş akışınızı başlatabilirsiniz.
       </p>
-      <Link
-        href="/musteriler/yeni"
-        className="mt-5 inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
-      >
-        <PlusIcon className="h-4 w-4" />
-        Yeni Müşteri
-      </Link>
+      {!isDemo ? (
+        <Link
+          href="/musteriler/yeni"
+          className="mt-5 inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Yeni Müşteri
+        </Link>
+      ) : null}
     </section>
   );
 }
 
-export default function CustomerList({ customers }: { customers: CustomerListItem[] }) {
+export default function CustomerList({
+  customers,
+  isDemo,
+}: {
+  customers: CustomerListItem[];
+  isDemo: boolean;
+}) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("Tümü");
@@ -73,7 +81,7 @@ export default function CustomerList({ customers }: { customers: CustomerListIte
     setStatus("Tümü");
   };
 
-  if (customers.length === 0) return <CustomerEmptyState />;
+  if (customers.length === 0) return <CustomerEmptyState isDemo={isDemo} />;
 
   return (
     <section className="overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">

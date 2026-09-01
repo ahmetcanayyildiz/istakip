@@ -21,7 +21,7 @@ const STATUS_FILTERS: Array<{ value: StatusFilter; label: string }> = [
   ...QUOTE_STATUS_OPTIONS,
 ];
 
-function QuoteEmptyState() {
+function QuoteEmptyState({ isDemo }: { isDemo: boolean }) {
   return (
     <section className="rounded-lg border border-ui-border bg-surface px-6 py-16 text-center shadow-xs">
       <span
@@ -34,18 +34,20 @@ function QuoteEmptyState() {
       <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-foreground-muted">
         Teklif oluşturma ekranını açabilir, müşteri ve kalem bilgilerini hazırlayabilirsiniz.
       </p>
-      <Link
-        href="/teklifler/yeni"
-        className="mt-5 inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
-      >
-        <PlusIcon className="h-4 w-4" />
-        Yeni Teklif
-      </Link>
+      {!isDemo ? (
+        <Link
+          href="/teklifler/yeni"
+          className="mt-5 inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-brand-action px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-action-hover"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Yeni Teklif
+        </Link>
+      ) : null}
     </section>
   );
 }
 
-export default function QuoteList({ quotes }: { quotes: QuoteListItem[] }) {
+export default function QuoteList({ quotes, isDemo }: { quotes: QuoteListItem[]; isDemo: boolean }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
 
@@ -81,7 +83,7 @@ export default function QuoteList({ quotes }: { quotes: QuoteListItem[] }) {
     setStatus("all");
   };
 
-  if (quotes.length === 0) return <QuoteEmptyState />;
+  if (quotes.length === 0) return <QuoteEmptyState isDemo={isDemo} />;
 
   return (
     <section className="overflow-hidden rounded-lg border border-ui-border bg-surface shadow-xs">

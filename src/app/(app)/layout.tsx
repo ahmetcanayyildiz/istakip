@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import AppHeader from "@/components/app-header";
 import AppSidebar from "@/components/app-sidebar";
+import DemoBanner from "@/components/demo-banner";
 import MobileNav from "@/components/mobile-nav";
 import { getCurrentAccount } from "@/lib/auth/account";
 
@@ -18,7 +19,8 @@ export default async function ProtectedAppLayout({ children }: { children: React
     <div className="flex min-h-screen">
       <AppSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader companyName={account.companyName} fullName={account.fullName} />
+        <AppHeader companyName={account.companyName} fullName={account.fullName} isDemo={account.isDemo} />
+        {account.isDemo ? <DemoBanner /> : null}
         <MobileNav />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>

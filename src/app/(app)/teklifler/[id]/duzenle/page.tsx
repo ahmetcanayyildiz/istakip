@@ -6,6 +6,7 @@ import { ArrowLeftIcon } from "@/components/icons";
 import QuoteDataError from "@/components/quotes/quote-data-error";
 import QuoteForm from "@/components/quotes/quote-form";
 import { updateQuoteAction } from "@/lib/quotes/actions";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 import { getActiveQuoteCustomers, getQuoteById } from "@/lib/quotes/data";
 import type { QuoteCustomerOption, QuoteFormInitialValues } from "@/lib/quotes/types";
 
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
 
 export default async function EditQuotePage({ params }: PageProps<"/teklifler/[id]/duzenle">) {
   const { id } = await params;
+  await redirectDemoMutationRoute(`/teklifler/${id}`);
   let quote;
 
   try {

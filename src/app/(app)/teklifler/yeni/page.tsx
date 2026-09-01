@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from "@/components/icons";
 import QuoteDataError from "@/components/quotes/quote-data-error";
 import QuoteForm from "@/components/quotes/quote-form";
 import { createQuoteAction } from "@/lib/quotes/actions";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 import { getActiveQuoteCustomers } from "@/lib/quotes/data";
 import type { QuoteFormInitialValues } from "@/lib/quotes/types";
 
@@ -18,6 +19,8 @@ function toDateInputValue(date: Date) {
 }
 
 export default async function NewQuotePage() {
+  await redirectDemoMutationRoute("/teklifler");
+
   let customers;
 
   try {

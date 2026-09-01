@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { isUuid } from "@/lib/customers/validation";
+import { isCurrentAccountDemo } from "@/lib/demo/access";
+import { DEMO_READ_ONLY_MESSAGE, isDemoReadOnlyError } from "@/lib/demo/errors";
 import type { JobActionState } from "@/lib/jobs/types";
 import { validateJobConversion } from "@/lib/jobs/validation";
 import { createClient } from "@/lib/supabase/server";
@@ -25,6 +27,7 @@ function logJobError(context: string, error: DatabaseError) {
 function mapJobError(error: DatabaseError) {
   const message = error.message?.toLowerCase() ?? "";
 
+  if (isDemoReadOnlyError(error)) return DEMO_READ_ONLY_MESSAGE;
   if (error.code === "28000" || error.code === "42501" || error.code === "PGRST301") {
     return "Bu işlem için yetkiniz bulunmuyor. Lütfen yeniden giriş yapın.";
   }
@@ -54,6 +57,7 @@ export async function createJobFromQuoteAction(
 ): Promise<JobActionState> {
   const validation = validateJobConversion(quoteId, formData);
   if (!validation.success) return errorState(validation.message);
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {

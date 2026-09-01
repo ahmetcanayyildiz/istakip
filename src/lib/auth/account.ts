@@ -16,9 +16,15 @@ type CurrentAccount =
       email: string | null;
       fullName: string | null;
       companyName: string;
+      isDemo: boolean;
     };
 
 type ProfileWithCompany = {
+  full_name: string | null;
+  company: { name: string; is_demo: boolean } | { name: string; is_demo: boolean }[] | null;
+};
+
+type LegacyProfileWithCompany = {
   full_name: string | null;
   company: { name: string } | { name: string }[] | null;
 };
@@ -34,13 +40,48 @@ export const getCurrentAccount = cache(async (): Promise<CurrentAccount> => {
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("full_name, company:companies(name)")
+    .select("full_name, company:companies(name, is_demo)")
     .eq("id", userId)
     .maybeSingle();
 
   if (error) {
-    console.error("Profile lookup failed.", { code: error.code });
-    return { status: "unavailable" };
+    // Keep normal sign-in available during a safe DB-first rollout. Before the
+    // demo migration exists, the legacy schema has no companies.is_demo column.
+    // Once migrated, the primary query succeeds and this compatibility path is
+    // no longer used. DB-level demo mutation guards remain the security boundary.
+    const { data: legacyData, error: legacyError } = await supabase
+      .from("profiles")
+      .select("full_name, company:companies(name)")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (legacyError) {
+      console.error("Profile lookup failed.", {
+        code: error.code,
+        fallbackCode: legacyError.code,
+      });
+      return { status: "unavailable" };
+    }
+
+    if (!legacyData) return { status: "needs_onboarding" };
+
+    const legacyProfile = legacyData as LegacyProfileWithCompany;
+    const legacyCompany = Array.isArray(legacyProfile.company)
+      ? legacyProfile.company[0]
+      : legacyProfile.company;
+    if (!legacyCompany?.name) return { status: "unavailable" };
+
+    return {
+      status: "ready",
+      userId,
+      email:
+        claimsData && typeof claimsData.claims.email === "string"
+          ? claimsData.claims.email
+          : null,
+      fullName: legacyProfile.full_name,
+      companyName: legacyCompany.name,
+      isDemo: false,
+    };
   }
 
   if (!data) return { status: "needs_onboarding" };
@@ -58,5 +99,6 @@ export const getCurrentAccount = cache(async (): Promise<CurrentAccount> => {
         : null,
     fullName: profile.full_name,
     companyName: company.name,
+    isDemo: company.is_demo,
   };
 });

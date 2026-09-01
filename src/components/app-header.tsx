@@ -20,9 +20,11 @@ function getInitials(value: string) {
 export default function AppHeader({
   companyName,
   fullName,
+  isDemo,
 }: {
   companyName: string;
   fullName: string | null;
+  isDemo: boolean;
 }) {
   const pathname = usePathname();
   const currentItem = NAV_ITEMS.find((item) => isActiveRoute(pathname, item.href));
@@ -48,6 +50,11 @@ export default function AppHeader({
       </div>
 
       <div className="flex items-center gap-3">
+        {isDemo ? (
+          <span className="rounded-full bg-warning-soft px-2.5 py-1 text-xs font-semibold text-warning ring-1 ring-inset ring-warning-ring">
+            Demo
+          </span>
+        ) : null}
         <div className="hidden text-right sm:block">
           <p className="max-w-44 truncate text-sm font-medium text-foreground">{companyName}</p>
           <p className="max-w-44 truncate text-xs text-foreground-muted">{displayName}</p>

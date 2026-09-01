@@ -4,13 +4,16 @@ import Link from "next/link";
 import CustomerForm from "@/components/customers/customer-form";
 import { ArrowLeftIcon } from "@/components/icons";
 import { createCustomerAction } from "@/lib/customers/actions";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 
 export const metadata: Metadata = {
   title: "Yeni Müşteri | İşTakip",
   description: "İşletmeniz için yeni bir müşteri kaydı oluşturun.",
 };
 
-export default function NewCustomerPage() {
+export default async function NewCustomerPage() {
+  await redirectDemoMutationRoute("/musteriler");
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <Link href="/musteriler" className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-foreground-secondary transition-colors hover:text-foreground">

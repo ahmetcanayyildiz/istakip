@@ -6,6 +6,7 @@ import { ArrowLeftIcon, MailIcon, PhoneIcon, UsersIcon } from "@/components/icon
 import ConvertQuoteToJob from "@/components/jobs/convert-quote-to-job";
 import QuoteDataError from "@/components/quotes/quote-data-error";
 import StatusBadge from "@/components/status-badge";
+import { getCurrentAccount } from "@/lib/auth/account";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { calculateLineTotalCents, centsToAmount } from "@/lib/quotes/calculations";
 import { getQuoteById } from "@/lib/quotes/data";
@@ -30,7 +31,8 @@ export async function generateMetadata({ params }: PageProps<"/teklifler/[id]">)
 }
 
 export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/[id]">) {
-  const { id } = await params;
+  const [account, { id }] = await Promise.all([getCurrentAccount(), params]);
+  const isDemo = account.status === "ready" && account.isDemo;
   let quote;
 
   try {
@@ -79,13 +81,13 @@ export default async function QuoteDetailPage({ params }: PageProps<"/teklifler/
           >
             İş: {quote.sourceJob.code} · İşi Gör
           </Link>
-        ) : quote.status === "approved" ? (
+        ) : quote.status === "approved" && !isDemo ? (
           <ConvertQuoteToJob quoteId={quote.id} />
-        ) : (
+        ) : quote.status !== "approved" && !isDemo ? (
           <Link href={`/teklifler/${quote.id}/duzenle`} className="inline-flex min-h-10 items-center justify-center rounded-md border border-ui-border bg-surface px-3.5 py-2 text-sm font-semibold text-foreground-secondary shadow-xs transition-colors hover:bg-surface-hover hover:text-foreground">
             Teklifi Düzenle
           </Link>
-        )}
+        ) : null}
       </div>
 
       <section className="rounded-lg border border-ui-border bg-surface p-5 shadow-xs">

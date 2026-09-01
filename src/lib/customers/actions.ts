@@ -5,10 +5,13 @@ import { redirect } from "next/navigation";
 
 import type { CustomerActionState } from "@/lib/customers/types";
 import { isUuid, validateCustomerForm } from "@/lib/customers/validation";
+import { isCurrentAccountDemo } from "@/lib/demo/access";
+import { DEMO_READ_ONLY_MESSAGE, isDemoReadOnlyError } from "@/lib/demo/errors";
 import { createClient } from "@/lib/supabase/server";
 
 type DatabaseError = {
   code?: string;
+  message?: string;
   status?: number;
 };
 
@@ -38,6 +41,7 @@ export async function createCustomerAction(
 ): Promise<CustomerActionState> {
   const validation = validateCustomerForm(formData);
   if (!validation.success) return errorState(validation.message);
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {
@@ -72,6 +76,7 @@ export async function createCustomerAction(
 
   if (error || !data?.id) {
     if (error) logCustomerError("Customer insert failed.", error);
+    if (error && isDemoReadOnlyError(error)) return errorState(DEMO_READ_ONLY_MESSAGE);
     return errorState("Müşteri kaydı oluşturulamadı. Lütfen bilgileri kontrol edip tekrar deneyin.");
   }
 
@@ -88,6 +93,7 @@ export async function updateCustomerAction(
 
   const validation = validateCustomerForm(formData);
   if (!validation.success) return errorState(validation.message);
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {
@@ -116,6 +122,7 @@ export async function updateCustomerAction(
 
   if (error) {
     logCustomerError("Customer update failed.", error);
+    if (isDemoReadOnlyError(error)) return errorState(DEMO_READ_ONLY_MESSAGE);
     return errorState("Müşteri kaydı güncellenemedi. Lütfen tekrar deneyin.");
   }
   if (!data) return errorState("Müşteri kaydı bulunamadı veya bu işlem için yetkiniz yok.");
@@ -133,6 +140,7 @@ export async function deleteCustomerAction(
   void previousState;
   void formData;
   if (!isUuid(customerId)) return errorState("Müşteri kaydı bulunamadı.");
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {
@@ -152,6 +160,7 @@ export async function deleteCustomerAction(
 
   if (error) {
     logCustomerError("Customer delete failed.", error);
+    if (isDemoReadOnlyError(error)) return errorState(DEMO_READ_ONLY_MESSAGE);
     if (error.code === "23503") {
       return errorState(
         "Bu müşteriye bağlı teklif veya işler bulunduğu için müşteri silinemiyor.",

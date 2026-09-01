@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const themeInitializationScript = `
@@ -30,7 +31,10 @@ export const metadata: Metadata = {
     "Küçük işletmeler için müşteri, teklif, iş, gider ve tahsilat yönetim paneli.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Set by the Proxy so the anti-flash theme script satisfies the nonce CSP.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html
       lang="tr"
@@ -38,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
       </head>
       <body className="min-h-full bg-page font-sans text-foreground">{children}</body>
     </html>

@@ -5,6 +5,7 @@ import ExpenseDataError from "@/components/expenses/expense-data-error";
 import ExpenseForm from "@/components/expenses/expense-form";
 import { ArrowLeftIcon } from "@/components/icons";
 import { getExpenseJobOptions } from "@/lib/expenses/data";
+import { redirectDemoMutationRoute } from "@/lib/demo/access";
 
 export const metadata: Metadata = {
   title: "Yeni Gider | İşTakip",
@@ -29,6 +30,7 @@ export default async function NewExpensePage({
 }: {
   searchParams: Promise<{ job?: string }>;
 }) {
+  await redirectDemoMutationRoute("/giderler");
   const params = await searchParams;
   let jobs;
 

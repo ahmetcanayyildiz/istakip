@@ -9,6 +9,8 @@ import {
   validateMarkCollectionPaidForm,
 } from "@/lib/collections/validation";
 import { isUuid } from "@/lib/customers/validation";
+import { isCurrentAccountDemo } from "@/lib/demo/access";
+import { DEMO_READ_ONLY_MESSAGE, isDemoReadOnlyError } from "@/lib/demo/errors";
 import { createClient } from "@/lib/supabase/server";
 
 type DatabaseError = {
@@ -28,6 +30,7 @@ function logCollectionError(context: string, error: DatabaseError) {
 function mapCollectionError(error: DatabaseError) {
   const message = error.message?.toLowerCase() ?? "";
 
+  if (isDemoReadOnlyError(error)) return DEMO_READ_ONLY_MESSAGE;
   if (error.code === "28000" || error.code === "42501" || error.code === "PGRST301") {
     return "Bu işlem için yetkiniz bulunmuyor. Lütfen yeniden giriş yapın.";
   }
@@ -75,6 +78,7 @@ export async function createCollectionAction(
 ): Promise<CollectionActionState> {
   const validation = validateCollectionForm(formData);
   if (!validation.success) return errorState(validation.message);
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {
@@ -115,6 +119,7 @@ export async function markCollectionPaidAction(
 ): Promise<CollectionActionState> {
   const validation = validateMarkCollectionPaidForm(formData);
   if (!validation.success) return errorState(validation.message);
+  if (await isCurrentAccountDemo()) return errorState(DEMO_READ_ONLY_MESSAGE);
 
   let supabase;
   try {

@@ -5,12 +5,14 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { AuthActionState } from "@/lib/auth/action-state";
+import { DEMO_READ_ONLY_MESSAGE, isDemoReadOnlyError } from "@/lib/demo/errors";
 import { createClient } from "@/lib/supabase/server";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type AuthErrorLike = {
   code?: string;
+  message?: string;
   status?: number;
 };
 
@@ -107,6 +109,57 @@ export async function loginAction(
   redirect(profile ? "/" : "/onboarding");
 }
 
+export async function demoLoginAction(
+  _previousState: AuthActionState,
+  _formData: FormData,
+): Promise<AuthActionState> {
+  void _previousState;
+  void _formData;
+  const email = process.env.DEMO_EMAIL?.trim().toLowerCase() ?? "";
+  const password = process.env.DEMO_PASSWORD ?? "";
+
+  if (!EMAIL_PATTERN.test(email) || password.length < 8) {
+    return errorState("Demo hesabı henüz yapılandırılmamış. Uygulama yöneticisiyle iletişime geçin.");
+  }
+
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    return errorState("Demo şu anda açılamıyor. Lütfen daha sonra tekrar deneyin.");
+  }
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+  if (signInError) {
+    logAuthError("Demo sign-in failed.", signInError);
+    return errorState("Demo şu anda açılamıyor. Lütfen daha sonra tekrar deneyin.");
+  }
+
+  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+  if (claimsError || typeof userId !== "string") {
+    if (claimsError) logAuthError("Demo claims validation failed.", claimsError);
+    await supabase.auth.signOut();
+    return errorState("Demo oturumu doğrulanamadı. Lütfen tekrar deneyin.");
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("company:companies(is_demo)")
+    .eq("id", userId)
+    .maybeSingle();
+  const company = Array.isArray(profile?.company) ? profile.company[0] : profile?.company;
+
+  if (profileError || company?.is_demo !== true) {
+    if (profileError) logAuthError("Demo profile validation failed.", profileError);
+    await supabase.auth.signOut();
+    return errorState("Demo hesabı güvenli biçimde doğrulanamadı.");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
+}
+
 export async function registerAction(
   _previousState: AuthActionState,
   formData: FormData,
@@ -193,6 +246,8 @@ export async function onboardingAction(
 
   if (error) {
     logAuthError("Onboarding RPC failed.", error);
+
+    if (isDemoReadOnlyError(error)) return errorState(DEMO_READ_ONLY_MESSAGE);
 
     if (error.code === "P0001") {
       const { data: profile } = await supabase
